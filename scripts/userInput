@@ -1,0 +1,14 @@
+#!/bin/bash
+
+read -p "Type your name, please: " nm
+
+echo Hello $nm.
+echo The ultimate question of life, the universe, and everything...
+
+read -p "Please Type the answer: " ch
+if [ "$ch" == "42" ] #needs spaces
+then
+  echo That\'s right
+else
+  echo No, the answer is 42
+fi

@@ -1,0 +1,205 @@
+%&pdflatex
+\documentclass{article}
+\usepackage[british]{babel}
+\usepackage[
+    includeall,
+    marginpar=1.5in,
+    hscale=0.707,vscale=0.9
+    ]{geometry}
+\usepackage{hyperref}
+\title{Unix Shell Scripting \\ Command Line Options}
+\author{%
+Dr Alun Moon\thanks{\url{alun.moon@northumbria.ac.uk}}\\
+Dr David Kendall\thanks{\url{david.kendall@northumbria.ac.uk}}\\
+Dr Michael Brockway\thanks{\url{michael.brockway@northumbria.ac.uk}}
+}
+
+\usepackage{fancyvrb,listings,verbatim,tcolorbox}
+
+\newcommand{\required}[1]{$\langle$\itshape #1$\rangle$}
+\newcommand{\optional}[1]{$[$\itshape #1$]$}
+\begin{document}
+\maketitle
+\newpage
+\section{Command line options and scripts}
+Shell scripts are almost always \emph{not-interactive}.
+User input to the script is provided using command-line options and parameters.
+
+\paragraph{Examples} are
+\begin{verbatim}
+ls -l
+head -n5
+grep -v
+\end{verbatim}
+
+\subsection{Conventions}
+The Unix convention is that options are command-line parameters that start with the hyphen/minus-sign (\textsc{ascii} 45).  There are three common conventions for the form of an option
+
+\paragraph{Unix} options are a single letter, options that require a parameter (such as a file name) have the option letter as the next command-line parameter.
+\subparagraph{examples}
+\begin{verbatim}
+  ls -l
+  head -n10
+  head -n 5
+\end{verbatim}
+
+\paragraph{GNU} style options staet with two hyphens and are a descriptive word (if more than one word hyphens separate words).  Parameters for the option can be \emph{either} the next command-line parameter, or be part of the option with an equals sign (\textsc{ascii} 61) joining the parts.
+\subparagraph{examples}
+\begin{verbatim}
+  tar --extract --file=archive.tar
+\end{verbatim}
+
+\paragraph{X} The X11 toolkit introduced another convention, options are a single hyphen followed by a word, any parameters are the next command-line parameter
+\subparagraph{examples}
+\begin{verbatim}
+  xterm -geometry 100x25
+  java -jar Lander.jar
+\end{verbatim}
+
+\section{POSIX style options}
+The POSIX standard guidelines for untilities say that options should follow the Unix notation above.
+\section{Processing script parameters (positional parameters)}
+Fortunately shells provide some tools that assist with the processing of options, the built-in command \verb'getopts' and the command \verb'getopt'  (usually \path{/usr/bin/getopt})
+
+\subsection{Simple options with \texttt{getopts}}
+The built-in function \texttt{getopts} can help handle simple single character options.  These options and any parameters \emph{must} be the first parameters on the commandline.
+
+\begin{itemize}
+  \item Options start with a hyphen `\texttt{-}'
+  \item Options are identified by a single character \\
+        (except colon `\texttt{:}' or question-mark '\texttt{?}`)
+  \item Where options take a parameter, the value \emph{must} follow the option character and may be seperated by whitespace.
+  \item Multiple options can be combined into a single string following the hyphen
+\end{itemize}
+
+The \texttt{getopts} command has the form
+\begin{quote}
+\texttt{getopts \required{opt-string} \required{var-name}}
+\end{quote}
+Where
+\begin{description}
+  \item[opt-string] is a string containing the option characters to recognise, where an option expects a parameter it is followed by a colon `\texttt{:}'
+  \item[var-name] is the name of a shell variable to set with the found option
+\end{description}
+\texttt{getopts} returns \textit{true} if it has successfully found an option, and \textit{false} when option proccessing is finished.
+\paragraph{Variables} that are set by \texttt{getopts} are
+\begin{description}
+  \item[\ttfamily{OPTARG}] is set to the value of the option parameter that has been found
+\item[\ttfamily{OPTIND}] is the position of the next parameter to process
+\end{description}
+When option processing has finished \texttt{OPTIND} is set to the position of the first non-option parameter.
+
+\subsubsection{Example}
+\begin{Verbatim}[numbers=left,gobble=2,commandchars=\\\{\}]
+  #!/usr/bin/bash
+  while getopts hf:m option   \label{getopt:use}
+  do
+    case $option in
+      h)
+        echo "Help text...."
+        ;;
+      m)
+        flag=
+        ;;
+      f)
+        filename=$OPTARG
+        ;;
+    esac
+  done
+  shift $((OPTIND-1))
+  for param in $*
+  do
+    echo "Positional parameter $param"
+  done
+  if $flag
+  then
+    echo "The option  -m has been used"
+  fi
+\end{Verbatim}
+
+As seen in line \ref{getopt:use}
+\begin{description}
+  \item[Line \ref{getopt:use}] uses
+\end{description}
+
+\section{Exercises}
+\subsection{Lab03 -- Shell script exercises}
+\paragraph{Script to tidy files.}  Copies files from a working directory into subfolders, pairing a subfolder with an extension.
+\subparagraph{Synopsis} \texttt{tidy \optional{-d work-dir} \optional{-t \required{dest-dir}\required{.ext} }}
+
+\subparagraph{Example} \texttt{tidy -d project -t src.c -t src.h -t out.o}\\
+copies C source and header files to the \texttt{src} directory, and object (\texttt{.o}) files to the \texttt{out} directory.
+\begin{Verbatim}[numbers=left,gobble=2]
+  #!/usr/bin/bash
+  declare -A tidypart=()  # Associative array key=value, dir=ext
+  while getopts d:t: flag
+  do
+          case $flag in
+                  d)
+                          workingdir=$OPTARG
+                          ;;
+                  t)
+                          key=${OPTARG%.*}
+                          value=${OPTARG#$key}
+                          tidypart[$key]=$value
+                          ;;
+          esac
+  done
+
+  for tgt in ${!tidypart[*]}
+  do
+          echo "move ${tidypart[$tgt]} to $tgt"
+  done
+\end{Verbatim}
+Version 2.  \texttt{getopts} processes each parameter in turn, until it finds a non-option that isn't a required parameter.
+\begin{Verbatim}[numbers=left,gobble=2]
+  #!/use/bin/bash
+  working=.
+  while getopts d:t:e:h spec
+  do
+      case $spec in
+          d)
+              working=$OPTARG
+              ;;
+          t)
+              target=$OPTARG
+              ;;
+          e)
+              extension=$OPTARG
+              mv $working/*.$extension $target
+              ;;
+          h)
+              echo<<-help
+              Usage:  tidy [-d working] [-t tgt] [-e ext] -h
+              Options are:
+                  -d sets the working directory
+                  -t sets the target directory (until next occurrence of -t)
+                  -e extensions of files to copy from working to target (no dot needed)
+                  -h this help text
+              help
+  done
+\end{Verbatim}
+
+\section{Disk Tidy}
+\paragraph{Tidy Files from a directory} into subdirectories based on filename extension.  For example:
+\begin{quote}
+  Copy all \texttt{.c} files into the \texttt{src} subdirectory and all \texttt{.o} files into the \texttt{obj} subdirectory
+\end{quote}
+\newcommand{\command}[1]{\texttt{#1}}
+\newcommand{\optionarg}[2]{$[$\texttt{#1} \texttt{\emph{#2}}$]$}
+\newcommand{\argument}[1]{$\langle$\texttt{\emph{#1}}$\rangle$}
+\newcommand{\arguments}[1]{\argument{#1}\ldots}
+
+\paragraph{Synopsis}\command{tidy} \optionarg{-d}{dir} \optionarg{-t}{tgt} \arguments{ext}
+\paragraph{Options}\begin{itemize}
+  \item[\texttt{-d}] the directory to copy from \texttt{\emph{dir}} is the directory to copy from
+  \item[\texttt{-t}] target directory to copy files into \texttt{\emph{tgt}} is the directory
+  \item[\texttt{\emph{ext}}] is a list of extensions to copy, files match the glob \texttt{*ext} (\emph{ie.} the extesion should include any dot)
+\end{itemize}
+
+\begin{tcolorbox}
+  \verbatiminput{dtidy}
+\end{tcolorbox}
+
+
+\end{document}

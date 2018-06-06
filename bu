@@ -1,0 +1,5 @@
+#!/usr/bin/bash
+declare -i vn
+vn=$(ls $1*|grep -o '\.[0-9]*$'|tr -d '.'|sort -nr|head -n1)
+cp -p $1 $1.$((vn+1))
+

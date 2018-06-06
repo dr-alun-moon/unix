@@ -1,0 +1,379 @@
+%&pdflatex
+\documentclass{article}
+\usepackage[
+    includeall,
+    marginpar=1.5in,
+    hscale=0.707,vscale=0.9
+    ]{geometry}
+\title{Unix Shell scripting}
+\author{Dr Alun Moon}
+\usepackage[svgnames]{xcolor}
+
+\usepackage[british]{babel}
+\usepackage{graphicx,
+            theorem,siunitx,minted}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+
+\convertcolorspec{wave}{528}{rgb}{\greenp}
+\convertcolorspec{wave}{602}{rgb}{\amberp}
+\convertcolorspec{wave}{443}{rgb}{\boxp}
+%\definecolor{ExampleFrame}{rgb}{0.628,0.705,0.942}
+\definecolor{ExampleFrame}{rgb}{\boxp}
+\definecolor{ExampleBack}{rgb}{\boxp}
+
+\definecolor{P1}{wave}{528}
+
+\usepackage[skins]{tcolorbox}
+\tcbset{enhanced,colframe=ExampleFrame!70!black,colback=ExampleBack!10,drop fuzzy shadow}
+\theorembodyfont{\upshape}
+\newtheorem{exercise}{Exercise:}
+\newtheorem{question}{Question:}
+\usepackage{hyperref}
+\hypersetup{%
+  colorlinks,
+  urlcolor = DarkRed,
+}%
+
+\newenvironment{listfile}[1]{\begin{tcolorbo}[enhanced,colframe=}{}
+
+\newcommand{\processing}[1]{\textcolor[HTML]{006699}{#1}}
+\newcommand{\type}[1]{\textcolor[HTML]{E2661A}{#1}}
+\newcommand{\constant}[1]{\textcolor[HTML]{718A62}{#1}}
+\newcommand{\keyword}[1]{\textcolor[HTML]{33997E}{#1}}
+
+\pagestyle{headings}
+\begin{document}
+\maketitle
+%\tableofcontents
+\section{Introduction}
+\paragraph{Shell scripts} in Unix are a very powerfull tool, they
+form much of the standard system as installed.
+
+What are these good for? So many file and system administration tasks
+are ``easier" using nautilus or the windows explorer or other tools
+accessible from the graphical desktops.
+
+\subsection{Notation}
+In the notes here and in the \texttt{man} pages help, a particular
+notation is used.  Examples here are shown without the shell prompt
+(\texttt{\$}).
+
+\paragraph{Optional parameters} that may be used or left out are
+shown in square brackets $[$optional$]$
+\begin{figure*}[h]
+\begin{verbatim}
+CP(1)                          User Commands                          CP(1)
+
+NAME
+       cp - copy files and directories
+
+SYNOPSIS
+       cp [OPTION]... [-T] SOURCE DEST
+       cp [OPTION]... SOURCE... DIRECTORY
+       cp [OPTION]... -t DIRECTORY SOURCE...
+\end{verbatim}
+  \caption{output from \texttt{man cp}}
+\end{figure*}
+
+\paragraph{Mandatory parameters} are parameters that \emph{must} be
+given to the command.  In the \texttt{man} pages these are often shown
+in \texttt{CAPITALS}, in these notes I'll put them  in angle
+brackets $\langle$\texttt{\emph{required}}$\rangle$,
+
+\subsection{Spaces}
+In some places spaces in the bash script are important.  Where
+necessary these will be shown as a \verb*| | symbol, for example
+\verb*'if [ -f name'
+
+\subsection{To try}
+Fragments of scripts to illustrate a point at marked with a
+\textcolor{Navy}{\rule[-0.3\baselineskip]{1pt}{\baselineskip} blue
+  line} ones to try yourself are  marked with a
+\textcolor{Green}{\rule[-0.3\baselineskip]{3pt}{\baselineskip} green
+  line}
+
+\subsection{Editing}
+\paragraph{A Script is just a text file containing a sequence of
+  commands.}  These are performed as if typed from the command line.
+
+In Unix systems scripts start with the \emph{shebang} line
+\begin{tcolorbox}
+\verbatiminput{scripts/template}
+\end{tcolorbox}
+The script is just a text file and can be edited using any text
+editor\marginpar{Good GUI based ones are
+  \textcolor{Navy}{\texttt{gedit}} and \textcolor{Navy}{\texttt{Atom}}}
+\marginpar{A good terminal based one is
+  \textcolor{Navy}{\texttt{nano}},
+   though I still relay on \textcolor{Navy}{\texttt{vi}}}.
+For example: the following script is put in a file \texttt{ascript}
+  \begin{tcolorbox}[title=script \texttt{ascript}]
+    \verbatiminput{scripts/one}
+  \end{tcolorbox}
+
+\subsection{Permissions}
+\paragraph{The file has to have its execute bit set } in order for it
+to be used as a command
+\begin{minted}[frame=leftline,rulecolor=\color{Green},framerule=3pt]{bash}
+chmod +x ascript
+\end{minted}
+It can now be run like any other unix command
+\begin{minted}[frame=leftline,rulecolor=\color{Green},framerule=3pt]{bash}
+ascript
+\end{minted}
+
+\subsection{Directories and the Working Directory}
+The concept of the working directory is important when working with
+files and scripts.  The shell can be thought of as being in the
+\emph{current working directory} commands that operate on files use
+this as the default directory.
+
+For example \texttt{ls} with no parameters lists the files in the
+working directory.
+
+\paragraph{To change the working directory.}  use the \texttt{cd}
+$\langle$\emph{directory name}$\rangle$ command
+
+\paragraph{To find the current working directory} use the
+\texttt{pwd} command.  Usually the modern convention is to have the
+prompt show the working directory\marginpar{or sometimes the last
+  folder in the working directory}.  The \texttt{pwd} command is
+useful to use in scripts.
+
+\paragraph{When referring to files} it is in relation to the
+\emph{working directory}\marginpar{Some editors default to the
+  \textsf{Documents} directory.  If your script is saved there you
+  will need to \texttt{cd Documents} to make this the working
+  directory}.
+A plain file-name refers to a file in the working directory.  A name
+prefixed with a directory name (\texttt{directory/file}) it refers to
+a file in that sub-directory.
+
+\subsection{Aside on missing files}
+Try the following in the command shell
+\begin{minted}[frame=leftline,rulecolor=\color{Green},framerule=3pt]{bash}
+mkdir folder
+cp *.h folder
+\end{minted}
+You should get an error as follows
+\begin{minted}[frame=leftline,rulecolor=\color{Navy},framerule=1pt]{shell-session}
+shell$ mkdir folder
+shell$ cp *.h folder
+cp: cannot stat '*.h': No such file or directory
+\end{minted}
+The problem is that there are no files ending in a \textsf{.h}, the
+exact reason for the error is dependent on the way the shell handles
+the \textsf{*.h}
+
+\section{Command-line parameters }
+We want to be able to make scripts that can be given parameters, such
+as a directory name.  We can call these like any other command
+\begin{minted}[frame=leftline,rulecolor=\color{Navy},framerule=1pt]{bash}
+scriptname foldername filename
+\end{minted}
+These are accessed using special variables
+\texttt{\$0}\ldots\texttt{\$9}
+\begin{exercise}
+  Try the following script, take care with the quotes
+  \inputminted[label=ascript,frame=leftline,rulecolor=\color{Green},framerule=3pt]{bash}{scripts/name}
+Then use the following parameters running the script from the shell
+\begin{minted}[frame=leftline,rulecolor=\color{Green},framerule=3pt]{text}
+names
+names fred
+names fred flintstone
+\end{minted}
+Note how variables that have not been set are expanded
+\end{exercise}
+
+\paragraph{Parameters can be used in any way}
+\begin{exercise}Create a script \texttt{initf}
+    \inputminted[label=ascript,frame=leftline,rulecolor=\color{Green},framerule=3pt]{bash}{scripts/initf}
+Then try it with
+\begin{minted}[frame=leftline,rulecolor=\color{Green},framerule=3pt]{text}
+intif .
+mkdir folder
+initf folder
+initf
+\end{minted}
+\begin{question}
+  What is the meaning of the dot \texttt{.} as a directory name?
+\end{question}
+\begin{question}
+  Without parameters, why does the script fail?
+\end{question}
+\end{exercise}
+
+\section{Variables}
+Shell variables are assigned by simply using their name with an equals
+sign and a value
+\inputminted[frame=leftline,rulecolor=\color{Navy},framerule=1pt]{console}{scripts/vareg}
+Note the lack of spaces round the equals sign.
+
+Try
+\inputminted[frame=leftline,rulecolor=\color{Green},framerule=3pt]{bash}{scripts/varex}
+
+\subsection{User input}
+The \texttt{read} command can be used to set variables from used input
+\inputminted[frame=leftline,rulecolor=\color{Green},framerule=3pt]{bash}{scripts/readex}
+\subsection{Variable substitution}
+To use a variable prefix it by a dollar sign \texttt{\$}.  The
+variable name and its dollar are substituted for by the text stored in
+the variable.  If the variable is unset, a blank is substituted.
+\inputminted[frame=leftline,rulecolor=\color{Green},framerule=3pt]{bash}{scripts/blankex}
+
+\subsection{Arithmetic}
+Variable substitution is by the text the variable contains.  If we
+want to perform arithmetic we need a different syntax
+ \inputminted[frame=leftline,rulecolor=\color{Green},framerule=3pt]{bash}{scripts/mathex}
+By putting the expression inside the \texttt{\$((}\ldots\texttt{))}
+several things happen
+\begin{enumerate}
+\item the value of variables is treated as a number
+\item arithmetic operations can take place
+\item numeric variables do not use the dollar prefix inside the brackets
+\end{enumerate}
+
+\section{Conditional Execution}
+The Unix shell gives us the full range of conditional operations.
+
+\paragraph{Logic values} in unix are based on the exit status of
+commands\marginpar{technically an exit status of 0 is true, non-0 is
+  false}
+
+\subsection{tests}
+In order to do logic we need to be able to do tests.  For this we need
+a function \texttt{test} (more commonly seen as \texttt{[ ]}) some
+common tests are\marginpar{see \texttt{man test}}
+\begin{itemize}
+\item \verb*:[ -e name ]: the file called name exists
+\item \verb*:[ -f name ]: the file name exists and is an ordinary name
+\item \verb*:[ -d name ]: the file name exists and is a directory
+\item \verb*:[ "string1" = "string2" ]: a string comparison for equality
+\item \verb*:[ N -eq M ]: an integer numeric comparison for equality
+\end{itemize}
+Note the need for spaces in the expressions
+
+\subsection{if\ldots fi}
+Try the following
+\inputminted[frame=leftline,rulecolor=\color{Green},framerule=3pt]{bash}{scripts/life}
+Note the spaces in the test and the \texttt{if..then..else..fi}
+pattern.  The test is done as a string comparison, note how the
+variable expansion is in a string quote.  This avoids the problem
+where nothing is entered and the variable expansion is a blank.
+
+\clearpage
+\paragraph{We can use these to check that a directory exists before creating it.}
+\inputminted[frame=leftline,rulecolor=\color{Green},framerule=3pt]{bash}{scripts/dirchk}
+
+\subsection{Multiple choises}
+For a multi-way decision the
+\texttt{if}\ldots\texttt{then}\ldots\texttt{elif} exists
+\inputminted[frame=leftline,rulecolor=\color{Navy},framerule=1pt]{bash}{scripts/ifelif}
+
+
+\section{Repetition -- loops}
+With loops we can perform operations repetitively.
+
+\subsection{while}
+We can keep asking a question until a condition is met.
+\inputminted[frame=leftline,rulecolor=\color{Green},framerule=3pt]{bash}{scripts/liferepr}
+Note that the \texttt{do}\ldots\texttt{done} marks the ends of the
+section of code repeated for each iteration of the loop
+
+\subsection{shift}
+The \texttt{shift} operation modifies the parameters supplied to the
+script in \texttt{\$1}, \texttt{\$2}, etc.
+
+Try the following
+\inputminted[frame=leftline,rulecolor=\color{Green},framerule=3pt]{bash}{scripts/shiftex}
+Shift is useful for iterating over a list of parameters
+\inputminted[frame=leftline,rulecolor=\color{Green},framerule=3pt]{bash}{scripts/shiftsum}
+
+\subsection{for}
+The other operation useful for loops is the \texttt{for}.
+This takes a list of values and sets a variable to each one in turn.
+\inputminted[frame=leftline,rulecolor=\color{Green},framerule=3pt]{bash}{scripts/forabc}
+
+\subsection{Backquotes and commands}
+The list of values may not be know ahead of time.  What we want is a
+way of generating a list of value to put in the code.
+
+We can do this by using file globbing
+\inputminted[frame=leftline,rulecolor=\color{Green},framerule=3pt]{bash}{scripts/forglob}
+
+We can use the backquote notation to include the output of a command
+
+Put the following in a text file, call the file \texttt{sample.text}
+\inputminted[frame=leftline,rulecolor=\color{Green},framerule=3pt]{text}{scripts/sample.text}
+
+
+
+Then try
+\inputminted[frame=leftline,rulecolor=\color{Green},framerule=3pt]{bash}{scripts/fortext}
+
+There is an alternative notation (that I prefer) that uses the
+characters \texttt{\$( )}
+\inputminted[frame=leftline,rulecolor=\color{Green},framerule=3pt]{bash}{scripts/fortextalt}
+
+
+
+\section{Exercises}
+\begin{exercise}
+  Write a script to take a list of filenames and write out some
+  information about each\marginpar{\textbf{hint:} take a look at the
+    \texttt{file} command to identify the file}
+\end{exercise}
+
+\begin{exercise}
+Write a script to count-down from
+10 then write a message ``blast-off''
+\end{exercise}
+
+\begin{exercise}
+  Write a script to accept two numbers and an arithmetic operator and
+  do the calculation, displaying the result. The operators could be +
+  - * / \%
+\end{exercise}
+
+\begin{exercise}
+  Extend these scripts so that they run repeatedly, until the user
+  opts to exit.
+\end{exercise}
+
+\begin{exercise}
+  Write a script supporting a menu system of your own design
+\end{exercise}
+
+
+\clearpage\appendix
+\section{POSIX Guidelines}
+From ``Utility Syntax Guidelines''
+\url{http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap12.html#tag_12_01}
+
+\begin{enumerate}
+\item Utility names should be between two and nine characters, inclusive.
+\item Utility names should include lowercase letters (the lower character classification) and digits only from the portable character set.
+\item Each option name should be a single alphanumeric character (the alnum character classification) from the portable character set. The -W (capital-W) option shall be reserved for vendor options.
+Multi-digit options should not be allowed.
+\item All options should be preceded by the '-' delimiter character.
+\item One or more options without option-arguments, followed by at most one option that takes an option-argument, should be accepted when grouped behind one '-' delimiter.
+\item Each option and option-argument should be a separate argument, except as noted in Utility Argument Syntax, item (2).
+\item Option-arguments should not be optional.
+\item When multiple option-arguments are specified to follow a single option, they should be presented as a single argument, using <comma> characters within that argument or <blank> characters within that argument to separate them.
+\item All options should precede operands on the command line.
+\item The first -- argument that is not an option-argument should be accepted as a delimiter indicating the end of options. Any following arguments should be treated as operands, even if they begin with the '-' character.
+\item The order of different options relative to one another should not matter, unless the options are documented as mutually-exclusive and such an option is documented to override any incompatible options preceding it. If an option that has option-arguments is repeated, the option and option-argument combinations should be interpreted in the order specified on the command line.
+\item The order of operands may matter and position-related interpretations should be determined on a utility-specific basis.
+\item For utilities that use operands to represent files to be opened for either reading or writing, the '-' operand should be used to mean only standard input (or standard output when it is clear from context that an output file is being specified) or a file named -.
+\item If an argument can be identified according to Guidelines 3 through 10 as an option, or as a group of options without option-arguments behind one '-' delimiter, then it should be treated as such.
+\end{enumerate}
+
+\end{document}
+
+
+%% Local Variables:
+%% mode:tabkey2
+%% mode:flyspell
+%% mode:reftex
+%% End:

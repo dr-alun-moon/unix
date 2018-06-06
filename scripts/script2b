@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Parameter 1 is directory to find files in.
+# Parameter 2 is directory to copy *.c* files to.
+# Parameter 3 is directory to copy *.x files to.
+
+echo Today is `date` # NB backquotes
+
+mkdir $2/src
+cp $1/*.c* $2/src
+echo Source files copied to $2/src
+
+mkdir $3/exc
+cp $1/*.x $3/exc
+echo Source files copied to $3/exc 
+
+read -p "Press ENTER to continue"
+clear

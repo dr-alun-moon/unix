@@ -1,0 +1,22 @@
+#!/bin/bash
+# Supply a path to a directory as parameter
+# All .txt files found there are concatenated to output file
+
+if [ -f fullText.txt ]
+then
+  rm fullText.txt
+  echo Old fullText.txt deleted 
+fi  
+
+ct=0
+for f in $1/*.txt
+do
+  echo $f  >> fullText.txt
+  echo ---------------- >> fullText.txt
+  cat "$f" >> fullText.txt
+  echo ---------------------------------- >> fullText.txt
+  ((ct++))     # ct=$(($ct+1)) also works! 
+done
+
+echo $ct texts processed.
+

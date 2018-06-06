@@ -1,0 +1,7 @@
+bash $ foo=Something
+bash $ echo $foo
+Something
+bash $ bar="Some more text (note quotes)"
+bash $ echo $bar
+Some more text (note quotes)
+bash $ 

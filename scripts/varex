@@ -1,0 +1,4 @@
+foo=This
+bar=that
+echo $foo and $bar
+

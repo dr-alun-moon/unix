@@ -1,0 +1,16 @@
+#!/bin/bash
+echo $1
+ls -l "$1"
+
+read -p "Delete(y/N)?" yn
+echo $yn
+
+if [ "$yn" == "y" ]
+then
+  rm "$1"
+  echo $1 deleted
+else
+  echo $1 Skipped
+fi
+
+

@@ -1,0 +1,45 @@
+#!/usr/bin/bash
+function usage ()
+{
+cat<<endofhelp
+Usage: dtidy [-h][-v][-d dir][-t dest] [.extensions]
+    -h          Show this help
+    -v          be verbose
+    -d dir      directory to tidy files from
+    -t dest     destination directory
+    .extensions list of extensions (with dot) to tidy
+endofhelp
+}
+
+function isdir ()
+{
+test -d $1
+}
+
+# set some defaults
+while getopts hvd:t: flag
+do
+    case $flag in
+        h)
+            usage
+            ;;
+        v)
+            verbose=-v
+            ;;
+        d)
+            dir=$OPTARG
+            ;;
+        t)
+            dest=$OPTARG
+            ;;
+    esac
+done
+
+shift $((OPTIND-1))
+
+for ext in $*
+do
+    isdir $dest || mkdir $verbose $dest
+    mv $verbose $dir/*$ext $dest
+done
+

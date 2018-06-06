@@ -1,0 +1,5 @@
+echo :$fred:
+fred=some-value
+echo :$fred:
+unset fred
+echo :$fred:

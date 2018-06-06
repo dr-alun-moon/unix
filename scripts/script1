@@ -1,0 +1,7 @@
+#!/bin/bash
+mkdir src
+cp *.c* src
+echo Source files copied to src folder
+mkdir exc
+cp *.x exc
+echo Source files copied to exc folder

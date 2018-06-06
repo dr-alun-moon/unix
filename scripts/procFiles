@@ -1,0 +1,12 @@
+#!/bin/bash
+# Given [$1] a folder to look in,
+# and [$2]  a list of files,
+# display details of each file and offer choice of keeping it
+
+for f in $1/*
+do
+  procFiles1 "$f"
+done
+ 
+
+

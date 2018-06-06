@@ -1,0 +1,81 @@
+%&pdflatex
+\documentclass{article}
+\usepackage[
+    includeall,
+    marginpar=1.5in,
+    hscale=0.707,vscale=0.9
+    ]{geometry}
+
+\title{Unix Shell scripting}
+\author{Dr Alun Moon}
+
+\usepackage[british]{babel}
+\usepackage{inconsolata,graphicx,
+            theorem,siunitx}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usepackage{xcolor,hyperref}
+
+\convertcolorspec{wave}{528}{rgb}{\greenp}
+\convertcolorspec{wave}{602}{rgb}{\amberp}
+\convertcolorspec{wave}{443}{rgb}{\boxp}
+%\definecolor{ExampleFrame}{rgb}{0.628,0.705,0.942}
+\definecolor{ExampleFrame}{rgb}{\boxp}
+\definecolor{ExampleBack}{rgb}{\boxp}
+
+\definecolor{P1}{wave}{528}
+
+\usepackage[skins]{tcolorbox}
+\tcbset{enhanced,colframe=ExampleFrame!70!black,colback=ExampleBack!10,drop fuzzy shadow}
+\theorembodyfont{\upshape}
+\newtheorem{exercise}{Exercise:}
+\newtheorem{question}{Question:}
+\hypersetup{%
+  colorlinks,
+  urlcolor = DarkRed,
+}
+
+\newenvironment{listfile}[1]{\begin{tcolorbo}[enhanced,colframe=}{}
+
+\newcommand{\processing}[1]{\textcolor[HTML]{006699}{#1}}
+\newcommand{\type}[1]{\textcolor[HTML]{E2661A}{#1}}
+\newcommand{\constant}[1]{\textcolor[HTML]{718A62}{#1}}
+\newcommand{\keyword}[1]{\textcolor[HTML]{33997E}{#1}}
+
+\begin{document}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+extname cf basename and dirname
+\verbatiminput{extname}
+\begin{verbatim}
+#!/usr/bin/bash
+getopts d withdot && shift
+extension=$(echo $name | grep -o '\.[^.]*$')
+case $withdot in
+  h)
+    echo "Usage: extname [-d] <name> | -h"
+    echo "  -h show help and exit"
+    echo "  -d show extension with leading dot"
+    exho "  <name> filename to process"
+  d)
+    echo $extension
+    ;;
+  ?)
+    echo $extension | tr -d '.'
+    ;;
+esac
+\end{verbatim}
+bu cf vax numbered backups
+\begin{verbatim}
+#!/bin/bash
+
+\end{verbatim}
+\verbatiminput{bu}
+\subparagraph{Options}
+
+safe delete (move to trash)
+
+simple sccs cf K\&P
+
+\bibliography{unix}
+\end{document}

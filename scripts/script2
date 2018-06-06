@@ -1,0 +1,18 @@
+#!/bin/bash
+
+date 
+
+cd $1
+mkdir src
+cp *.c* src
+echo Source files copied to src folder
+
+mkdir exc
+cp *.x exc
+echo Source files copied to exc folder
+
+#  Wait for a key press ...
+read -p "Press ENTER to continue"
+clear
+
+# Qu: we cd'd to $1 -- what is directory afterwood?

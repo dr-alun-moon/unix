@@ -1,0 +1,24 @@
+#!/bin/bash
+
+echo Today is `date` 
+
+echo "$1"
+
+if [ -d "$1" ] 
+then
+  cd $1
+  mkdir src
+  cp *.c* src
+  echo Source files copied to src folder
+
+  mkdir exc
+  cp *.x exc
+  echo Source files copied to exc folder
+else 
+  echo Working directory not found.
+fi
+
+#  Wait for a key press ...
+read -p "Press ENTER to continue"
+clear
+
