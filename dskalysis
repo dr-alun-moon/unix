@@ -1,0 +1,58 @@
+#!/usr/bin/bash
+
+function bar {
+    local OPTIND=1
+    echo hello $*
+    while getopts dn opt
+    do
+        echo option \'$opt\'
+    done
+}
+
+function init {
+    local OPTIND=1
+    while getopts i:v flags
+    do
+        case $flags in
+            i)
+                StudentID=$OPTARG
+                ;;
+            v)
+                VERBOSE=-v
+                ;;
+        esac
+    done
+    export ${StudentID=defaultID}
+    mkdir $VERBOSE -p $HOME/$StudentID/kf4005
+}
+
+function rmount {
+  # remote mount filesystem
+}
+
+function aquire {
+  local OPTIND=1
+  cp $VERBOSE $remotefile $DSKIMAGE
+}
+
+function mount {
+  /usr/bin/mount -o 
+}
+
+while getopts f:d:v fileopt
+do
+    case $fileopt in
+        f)
+            DSKIMAGE=$OPTARG
+            ;;
+        d)
+            MNTPOINT=$OPTARG
+            ;;
+        v)
+            VERBOSE=-v
+            ;;
+    esac
+done
+let options=OPTIND-1
+shift $options
+eval "$@"

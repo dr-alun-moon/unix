@@ -1,0 +1,28 @@
+.TH DTIDY 1 03/07/2018 KF4005 "Operating System Fundamentals"
+.SH NAME
+dtidy \- disk tidying example
+.SH SYNOPSIS
+.B dtidy
+.RB [ -h ]
+.RB [ -v ]
+.RB [ -d
+.IR dir ]
+.RB [ -t
+.IR dest ]
+.RI [ .extension ] ...
+
+.SH OPTIONS
+.TP -h
+Show brief help/usage.
+.TP -v
+Be verbose in operations, is passed as a flag to file-system commands.
+.TP
+.BI -d \ directory
+The directory from which to tidy files.
+.TP
+.BI -t \ dest
+The directory into which the files are tidied
+.TP
+.I .extension
+The file extension(s) to tidy.
+.SH DESCRIPTION
