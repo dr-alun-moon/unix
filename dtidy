@@ -29,15 +29,19 @@ while getopts hvd:t: option
 do
     case $option in
         h)
+			# call the function to show the help and exit
             usage && exit 0
             ;;
         v)
+			# set the verbose flag for use in commands below
             verbose=-v
             ;;
         d)
+			# set the directory to move from
             dir=$OPTARG
             ;;
         t)
+			# set the directory to move to
             dest=$OPTARG
             ;;
     esac
@@ -54,7 +58,7 @@ shift $((OPTIND-1))
 # if the parameter is not set, write the message to std error and exit
 # the line can be read as,
 #  " a directory exists  OR make a directory
-test -d ${dest:?"Destination directory not set"} || mkdir ${dest}
+test -d ${dest:?"Destination directory not set"} || mkdir $verbose ${dest}
 
 # we can now loop over the extensions in the positional parameters
 for ext in $*
@@ -64,6 +68,6 @@ do
     #    Use Default Values.
     #    If parameter is unset or null, the expansion of word is substituted.
     #    Otherwise, the value of parameter is substituted.
-	mv ${dir:-.}/*${ext} ${dest}
+	mv $verbose ${dir:-.}/*${ext} ${dest}
 done
 
