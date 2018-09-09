@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 function bar {
     local OPTIND=1
@@ -22,12 +22,14 @@ function init {
                 ;;
         esac
     done
-    export ${StudentID=defaultID}
+    export SID=${StudentID=defaultID}
     mkdir $VERBOSE -p $HOME/$StudentID/kf4005
 }
 
 function rmount {
   # remote mount filesystem
+  echo nfs
+  echo $SID
 }
 
 function aquire {
@@ -55,4 +57,6 @@ do
 done
 let options=OPTIND-1
 shift $options
+echo "before $SID"
 eval "$@"
+echo "after $SID"

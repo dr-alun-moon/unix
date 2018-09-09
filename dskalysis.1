@@ -7,6 +7,7 @@ dskalysis \- disk analysis multi-function script
 .IR disk-file ]
 .RB [ -d
 .IR mount-point ]
+.RB [ -v ]
 .RI [ commandlet ]
 .RI [ options ]
 
@@ -20,6 +21,15 @@ The filename of the disk image to use.
 The mount point to attach the mounted disk-image to.
 
 .SH COMMANDLETS
+.TP
+.B init
+.RB [ -i
+.IR studentID ]
+.RB [ -v ] \ 
+Initialises the workspace for the practical work.  Creates a directory for the supplied
+student ID (
+.B -i
+) 
 .TP
 .BI rmount \ remote-dir
 Mount the remote file-system to obtain the image.
