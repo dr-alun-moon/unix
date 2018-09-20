@@ -1,0 +1,141 @@
+\documentclass[12pt]{article}
+\usepackage[british]{babel}
+
+\title{Disk Analysis Excercise/Assignment \\---\\ Some updates}
+\author{Dr Alun Moon}
+
+\usepackage{tcolorbox,xcolor}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+	These are some notes on suggestions to update the solution to the 
+	``Disk Analysis'' excercises and assignment
+\end{abstract}
+
+Some of the issues I'm aiming to tidy up include
+\begin{itemize}
+	\item Remove interactive elements, no use of \verb:read -p: etc
+	\item Proper handling of commandline options, make use of \verb:getopts:
+	\item Use a \emph{sub-command} structure, like \verb:git:
+	\item Allow for some automated testing and marking of basic functionallity
+\end{itemize}
+
+\section{Global Option processing}
+Options are processed using the \verb:getopts: command.  The recommended pattern is 
+\begin{tcolorbox}[title=\texttt{getopts} handling]
+\begin{verbatim}
+while getopts vf:d: flags
+do
+    case $flags in
+        v)
+            VERBOSE=-v
+            ;;
+        f)
+            FILE=$OPTARG
+            ;;
+        d)
+            MOUNTDIR=$OPTARG
+            ;;
+    esac
+done
+let options=OPTIND-1
+shift $options
+\end{verbatim}
+\end{tcolorbox}
+The use of \verb:let: and \verb:shift: calculates the number of arguments processed 
+(\verb:OPTIND: is the index of the next argument to process)
+and removes the processed parameters from the parameter list.
+The use of \verb:let: allows for arthmetic expressions to be used to set parameters.
+The remaining positional parameters can be processed with \verb:\$*:
+
+\section{Sub commands}
+The pattern of using sub-commands (\textit{c.f.} \verb:git:) can be implemented quite simply
+each sub-command is a shell function defined in the script.
+
+If the first positional parameter is the sub-command, and the remaining positional parameters are the 
+options and parameters for the sub-command.  Then it can be evaluated using 
+\begin{tcolorbox}[title=sub-command evaluation]
+\begin{verbatim}
+eval "$@"
+\end{verbatim}
+\end{tcolorbox}
+Using the pattern \verb:"$@": ensures than any parameters with spaces in are properly quoted 
+and not subject to the shell's word splitting mechanism.
+\subsection{Sub-Command Options}
+Options can be handled in functions, in the same way as shell parameters.
+Two things to note are:
+\begin{itemize}
+\item \verb:getopts: works on the current set of positional parameters (\textit{i.e} the function parameters)
+\item \verb:OPTIND: is global to the shell so will need resetting prior to invocation of \verb:getopts:
+\end{itemize}
+\begin{tcolorbox}[title=function option handling]
+\begin{verbatim}
+function init {
+    local OPTIND=1
+    while getopts i:v flags
+    # etc
+}
+\end{verbatim}
+\end{tcolorbox}
+Making a \verb:local: version of \verb:OPTIND: resets the behaviour of \verb:getopts: to process the
+current (local) positional parameters.
+
+\begin{tcolorbox}[colframe=red]
+This mechanism for command dispatch is rather crude, there isn't any checking for a errors
+beyond the shell complaining if the command (function) is not found.
+
+Would a switch be better?
+\begin{tcolorbox}
+\begin{verbatim}
+# options processed
+case $1 in
+    init)
+         init  # call init function
+         ;;
+    mount)
+        shift 1
+        mount "$@"
+        ;;
+    *)
+        echo "some error condition, "
+        echo "command not recognised?"
+        ;;
+esac
+\end{verbatim}
+\end{tcolorbox}
+
+\end{tcolorbox}
+
+\section{Actions}
+Looking through the tasks for the seminar session, the assessed practical, and the assignment brief.
+There are the following tasks that the student and script must perform.
+\begin{enumerate}
+	\item Install the script
+		\begin{itemize}
+			\item copy it to the right directory
+			\item set the permissions (execute bit)
+			\item add the directory to the \verb:PATH:
+		\end{itemize}
+		This can't easially be made a function of the script,
+	\item Create directories for the lab session.\\
+		Make a directory \texttt{/home/student/id/kf4005}
+	\item Obtain the raw disk image, put it into the working directory
+	\item Examine the partition table
+	\item Mount the disk image
+	\item Show the mount table
+	\\\hrule
+	\item Disk analysis script
+	\begin{enumerate}
+		\item mount the image on a directory --- take precautions
+		\item extract metedata from cli specified directories on the image
+		\item save metadata to file
+		\item Create an SQL database
+		\item Create a data table
+		\item populate the table from metadata
+		\item use SQL SELECT to query table and write to file
+	\end{enumerate}
+	\item create tar file for submission.	
+\end{enumerate}
+\end{document}
