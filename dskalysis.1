@@ -7,19 +7,32 @@ dskalysis \- disk analysis multi-function script
 .IR disk-file ]
 .RB [ -d
 .IR mount-point ]
+.RB [ -v ]
 .RI [ commandlet ]
 .RI [ options ]
 
 .SH OPTIONS
-There are two global options that come before the commandlet name.
+There are global options that come before the commandlet name.
 .TP
 .BI -f \ disk-file
 The filename of the disk image to use.
 .TP
 .BI -d \ mount-point
 The mount point to attach the mounted disk-image to.
-
+.TP
+.B -v
+Verbatim flag 
 .SH COMMANDLETS
+.TP
+.B init
+.RB [ -i
+.IR studentID ]
+.RB [ -v ]
+.br
+Initialises the workspace for the practical work.  Creates a directory for the supplied
+student ID (
+.B -i
+) 
 .TP
 .BI rmount \ remote-dir
 Mount the remote file-system to obtain the image.

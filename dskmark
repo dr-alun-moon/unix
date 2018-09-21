@@ -1,0 +1,26 @@
+#!/bin/bash
+# Invoke and mark students work
+# Student ID is $1
+Module=kf4005
+Student=$1
+# create workspace
+Workspace=$HOME/$Module/$Student
+mkdir -p $Workspace
+cd $Workspace
+# get and unpack submission
+tar xf $HOME/$Module/submissions/$Student.tar.gz
+
+# execute 
+$Workspace/disk_analysis initialise
+test -d $Workspace/kf4005 
+# get image
+$Workspace/disk_analysis getimage
+test -f $Workspace/image.img
+# mount
+$Workspace/disk_analysis mount image.img kf4005
+
+$Workspace/disk_analysis metdata kf4005 /bin /sbin
+test -f filedata
+cmp filedata $HOME/$Module/filedata
+
+
