@@ -1,5 +1,7 @@
 \documentclass[12pt]{article}
 \usepackage[british]{babel}
+\usepackage[a4paper]{geometry}
+
 
 \title{Disk Analysis Excercise/Assignment \\---\\ Some updates}
 \author{Dr Alun Moon}
@@ -48,7 +50,7 @@ The use of \verb:let: and \verb:shift: calculates the number of arguments proces
 (\verb:OPTIND: is the index of the next argument to process)
 and removes the processed parameters from the parameter list.
 The use of \verb:let: allows for arthmetic expressions to be used to set parameters.
-The remaining positional parameters can be processed with \verb:\$*:
+The remaining positional parameters can be processed with \verb:$*:
 
 \section{Sub commands}
 The pattern of using sub-commands (\textit{c.f.} \verb:git:) can be implemented quite simply
