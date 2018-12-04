@@ -10,22 +10,14 @@
 \usepackage[svgnames]{xcolor}
 
 \usepackage[british]{babel}
-\usepackage{graphicx,
-            theorem,siunitx,minted}
+\usepackage{siunitx,minted}
 \usepackage{tikz}
 \usetikzlibrary{calc}
 
-\convertcolorspec{wave}{528}{rgb}{\greenp}
-\convertcolorspec{wave}{602}{rgb}{\amberp}
-\convertcolorspec{wave}{443}{rgb}{\boxp}
-%\definecolor{ExampleFrame}{rgb}{0.628,0.705,0.942}
-\definecolor{ExampleFrame}{rgb}{\boxp}
-\definecolor{ExampleBack}{rgb}{\boxp}
-
-\definecolor{P1}{wave}{528}
-
 \usepackage[skins]{tcolorbox}
-\tcbset{enhanced,colframe=ExampleFrame!70!black,colback=ExampleBack!10,drop fuzzy shadow}
+%\tcbset{enhanced,colframe=ExampleFrame!70!black,colback=ExampleBack!10,drop fuzzy shadow}
+
+\usepackage{theorem}
 \theorembodyfont{\upshape}
 \newtheorem{exercise}{Exercise:}
 \newtheorem{question}{Question:}
@@ -35,12 +27,6 @@
   urlcolor = DarkRed,
 }%
 
-\newenvironment{listfile}[1]{\begin{tcolorbo}[enhanced,colframe=}{}
-
-\newcommand{\processing}[1]{\textcolor[HTML]{006699}{#1}}
-\newcommand{\type}[1]{\textcolor[HTML]{E2661A}{#1}}
-\newcommand{\constant}[1]{\textcolor[HTML]{718A62}{#1}}
-\newcommand{\keyword}[1]{\textcolor[HTML]{33997E}{#1}}
 
 \pagestyle{headings}
 \begin{document}
@@ -48,82 +34,99 @@
 %\tableofcontents
 \section{Introduction}
 \paragraph{Shell scripts} in Unix are a very powerfull tool, they
-form much of the standard system as installed.
-
-What are these good for? So many file and system administration tasks
-are ``easier" using nautilus or the windows explorer or other tools
-accessible from the graphical desktops.
-
-\subsection{Notation}
-In the notes here and in the \texttt{man} pages help, a particular
-notation is used.  Examples here are shown without the shell prompt
-(\texttt{\$}).
-
-\paragraph{Optional parameters} that may be used or left out are
-shown in square brackets $[$optional$]$
-\begin{figure*}[h]
-\begin{verbatim}
-CP(1)                          User Commands                          CP(1)
-
-NAME
-       cp - copy files and directories
-
-SYNOPSIS
-       cp [OPTION]... [-T] SOURCE DEST
-       cp [OPTION]... SOURCE... DIRECTORY
-       cp [OPTION]... -t DIRECTORY SOURCE...
-\end{verbatim}
-  \caption{output from \texttt{man cp}}
-\end{figure*}
-
-\paragraph{Mandatory parameters} are parameters that \emph{must} be
-given to the command.  In the \texttt{man} pages these are often shown
-in \texttt{CAPITALS}, in these notes I'll put them  in angle
-brackets $\langle$\texttt{\emph{required}}$\rangle$,
+form much of the standard system as installed.  Many file handling and
+administrative tasks are aided and automated by use of shell scripts.
 
 \subsection{Spaces}
 In some places spaces in the bash script are important.  Where
 necessary these will be shown as a \verb*| | symbol, for example
 \verb*'if [ -f name'
 
-\subsection{To try}
-Fragments of scripts to illustrate a point at marked with a
-\textcolor{Navy}{\rule[-0.3\baselineskip]{1pt}{\baselineskip} blue
-  line} ones to try yourself are  marked with a
-\textcolor{Green}{\rule[-0.3\baselineskip]{3pt}{\baselineskip} green
-  line}
-
 \subsection{Editing}
 \paragraph{A Script is just a text file containing a sequence of
   commands.}  These are performed as if typed from the command line.
+Since the script is just plain text, it can be edited with just about any
+editor.  It can also be manipulated, archived, indexed, and managed under
+version control,  just like any other file or program.
 
-In Unix systems scripts start with the \emph{shebang} line
-\begin{tcolorbox}
-\verbatiminput{scripts/template}
-\end{tcolorbox}
-The script is just a text file and can be edited using any text
-editor\marginpar{Good GUI based ones are
-  \textcolor{Navy}{\texttt{gedit}} and \textcolor{Navy}{\texttt{Atom}}}
-\marginpar{A good terminal based one is
-  \textcolor{Navy}{\texttt{nano}},
-   though I still relay on \textcolor{Navy}{\texttt{vi}}}.
-For example: the following script is put in a file \texttt{ascript}
+\subsection{Executing a script}
+When you type a command at the shell prompt, there are two steps the shell
+takes to find and execute the command.
+\begin{enumerate}
+	\item locates a file with a name that matches the command.
+		\begin{itemize}
+			\item If the command starts with a \verb'/', or a relative
+				pathname, the file named is used.
+			\item For a single word command, a list of directories is searched
+				for a file that matches the name.  This list is held in the
+				\verb'PATH' environment variable.
+		\end{itemize}
+	\item attempts to execute the file.
+		\begin{itemize}
+			\item The execute permission bit for the user entering the command
+				\textbf{must} be set.
+		\end{itemize}
+\end{enumerate}
+
+
+\clearpage\section{Creating a shell script}
+A shell script is just a text file, so any good text editor will do.  I use
+\verb'vi', but that is a matter of familiarity.  Another good editor for use
+on the terminal is \verb'nano'.  The file just contains commands, just as if typed in at the terminal.
+
+
+\paragraph{For example:} the following script is put in a file \texttt{ascript}
   \begin{tcolorbox}[title=script \texttt{ascript}]
-    \verbatiminput{scripts/one}
+    \verbatiminput{scripts/ascript}
   \end{tcolorbox}
 
-\subsection{Permissions}
 \paragraph{The file has to have its execute bit set } in order for it
 to be used as a command
-\begin{minted}[frame=leftline,rulecolor=\color{Green},framerule=3pt]{bash}
-chmod +x ascript
+\begin{tcolorbox}[colframe=Green]
+\begin{minted}{shell-session}
+$ chmod +x ascript
+$
 \end{minted}
+\end{tcolorbox}
 It can now be run like any other unix command
-\begin{minted}[frame=leftline,rulecolor=\color{Green},framerule=3pt]{bash}
-ascript
+\begin{tcolorbox}[colframe=Green]
+\begin{minted}{shell-session}
+$ ./ascript
+$
 \end{minted}
+\end{tcolorbox}
+The execute bit needs only setting the once.
 
-\subsection{Directories and the Working Directory}
+\begin{tcolorbox}[colframe=Green]
+\begin{minted}{shell-session}
+$ vi ascript
+$ chmod +x ascript
+$ ./ascript
+Tue  4 Dec 12:25:13 GMT 2018
+cgam1
+/home/cgam1/unix/scripts
+$ vi ascript
+$ ./ascript
+Tue  4 Dec 12:26:02 GMT 2018
+cgam1
+/home/cgam1/unix/scripts
+$
+\end{minted}
+\end{tcolorbox}
+
+\paragraph{shebang line}
+There is a convention that scripts start with a \emph{shebang} line, that
+starts with a \verb'#!' pair of characters.
+\begin{tcolorbox}
+\begin{minted}{bash}
+#!/bin/bash
+\end{minted}
+\end{tcolorbox}
+The line is used to give the interpreter used for the file.  It allows shell
+scripts to be written in a variety of languages, bash shell, python, sed, awk,
+etc.
+
+\section{Directories and the Working Directory}
 The concept of the working directory is important when working with
 files and scripts.  The shell can be thought of as being in the
 \emph{current working directory} commands that operate on files use
@@ -349,7 +352,7 @@ Write a script to count-down from
 \clearpage\appendix
 \section{POSIX Guidelines}
 From ``Utility Syntax Guidelines''
-\url{http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap12.html#tag_12_01}
+\url{http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap12.html#tag_12_02}
 
 \begin{enumerate}
 \item Utility names should be between two and nine characters, inclusive.

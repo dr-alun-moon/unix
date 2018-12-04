@@ -1,0 +1,24 @@
+#!/bin/bash
+# examples of how persistence can be achieved in scripts.
+keepvars=("file" "mount")
+rcfile=./dot.persistrc
+
+# get values from rc file if it exists
+test -f $rcfile && source $rcfile
+
+function writerc {
+	for v
+	do
+		sed -i -e"/$v=/d" $rcfile 2>/dev/null # delete old value, ignore errors
+		echo "$v=${!v}" >> $rcfile # append new value to file
+	done
+}
+
+function tt {
+	export baz=barney$foo
+}
+
+foo=fred
+fred=wilma
+tt
+writerc foo fred baz

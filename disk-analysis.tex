@@ -3,17 +3,18 @@
 \usepackage[a4paper]{geometry}
 
 
-\title{Disk Analysis Excercise/Assignment \\---\\ Some updates}
+\title{Disk Analysis Exercise/Assignment \\---\\ Some updates}
 \author{Dr Alun Moon}
 
 \usepackage{tcolorbox,xcolor}
+\usepackage{booktabs}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
 	These are some notes on suggestions to update the solution to the 
-	``Disk Analysis'' excercises and assignment
+	``Disk Analysis'' exercises and assignment
 \end{abstract}
 
 Some of the issues I'm aiming to tidy up include
@@ -21,7 +22,7 @@ Some of the issues I'm aiming to tidy up include
 	\item Remove interactive elements, no use of \verb:read -p: etc
 	\item Proper handling of commandline options, make use of \verb:getopts:
 	\item Use a \emph{sub-command} structure, like \verb:git:
-	\item Allow for some automated testing and marking of basic functionallity
+	\item Allow for some automated testing and marking of basic functionality
 \end{itemize}
 
 \section{Global Option processing}
@@ -49,7 +50,7 @@ shift $options
 The use of \verb:let: and \verb:shift: calculates the number of arguments processed 
 (\verb:OPTIND: is the index of the next argument to process)
 and removes the processed parameters from the parameter list.
-The use of \verb:let: allows for arthmetic expressions to be used to set parameters.
+The use of \verb:let: allows for arithmetic expressions to be used to set parameters.
 The remaining positional parameters can be processed with \verb:$*:
 
 \section{Sub commands}
@@ -120,7 +121,7 @@ There are the following tasks that the student and script must perform.
 			\item set the permissions (execute bit)
 			\item add the directory to the \verb:PATH:
 		\end{itemize}
-		This can't easially be made a function of the script,
+		This can't easily be made a function of the script,
 	\item Create directories for the lab session.\\
 		Make a directory \texttt{/home/student/id/kf4005}
 	\item Obtain the raw disk image, put it into the working directory
@@ -131,7 +132,7 @@ There are the following tasks that the student and script must perform.
 	\item Disk analysis script
 	\begin{enumerate}
 		\item mount the image on a directory --- take precautions
-		\item extract metedata from cli specified directories on the image
+		\item extract metadata from cli specified directories on the image
 		\item save metadata to file
 		\item Create an SQL database
 		\item Create a data table
@@ -140,4 +141,37 @@ There are the following tasks that the student and script must perform.
 	\end{enumerate}
 	\item create tar file for submission.	
 \end{enumerate}
+
+\section{Commands and semantics}
+Suggested commands for parts of the assignment, suitable for automating.
+
+\begin{description}
+
+	\item[Create directory] for the assignment\\
+		\verb'dskalysis init <id>'\\
+		\texttt{id} is the student id,\\
+		creates \verb'~/<id>/kf4005' hierarchy 
+
+	\item[Obtain image] for the assignment\\
+		\verb'dskalysis getimage <image>'\\
+		Gets the named image (assuming consistent network address prefix),
+		puts it into created directory.
+
+	\item[Examine partition table] for image\\
+		\verb'dskalysis examine <image>'\\
+		prints out the partition table for the image in the created directory
+
+	\item[mount the image] on a directory\\
+		\verb'dskalysis mount -f<img> -d<mntpt>'\\
+		Mounts the image on the given mount point
+
+	\item[extract metadata] from mounted directories\\
+		\verb'dskalysis metadata <d1> <dn> ...'\\
+
+	\item[create database] for results\\
+		\verb'dskalysis createdb'\\
+
+	\item[create table]  for results \\
+\end{description}
+
 \end{document}
