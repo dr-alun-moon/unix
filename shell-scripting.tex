@@ -1,34 +1,76 @@
 %&pdflatex
-\documentclass{article}
-\usepackage[
-    includeall,
-    marginpar=1.5in,
-    hscale=0.707,vscale=0.9
-    ]{geometry}
+\documentclass[a4paper]{article}
+\usepackage[british]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[ttdefault=true]{AnonymousPro}
+\usepackage[vscale=0.8]{geometry}
+
 \title{Unix Shell scripting}
 \author{Dr Alun Moon}
 \usepackage[svgnames]{xcolor}
 
-\usepackage[british]{babel}
-\usepackage{siunitx,minted}
-\usepackage{tikz}
-\usetikzlibrary{calc}
+\usepackage{siunitx}
 
 \usepackage[skins]{tcolorbox}
-%\tcbset{enhanced,colframe=ExampleFrame!70!black,colback=ExampleBack!10,drop fuzzy shadow}
+
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usetikzlibrary{positioning,arrows.meta}
+\usetikzlibrary{decorations,decorations.text}
+
+\usepackage{manfnt,fontawesome}
+
+\usepackage{tcolorbox}
+\tcbuselibrary{skins}
+\tcbset{boxrule=0.3mm}
+\newtcolorbox{note}[1]{enhanced,
+    boxrule=0.3mm,
+    left=5mm,right=1mm, top=1mm,bottom=1mm,
+    colback=yellow!50,
+    sharp corners,rounded corners=southeast,arc is
+	angular,arc=3mm,
+    colframe=yellow!20!black,
+    underlay={%
+		\path[fill=tcbcol@back!80!black]
+			([yshift=3mm]interior.south east)--++(-0.4,-0.1)--++(0.1,-0.2);
+		\path[draw=tcbcol@frame,shorten <=-0.05mm,shorten >=-0.05mm]
+			([yshift=3mm]interior.south east)--++(-0.4,-0.1)--++(0.1,-0.2);
+		\path[fill=yellow!50!black,draw=none]
+			(interior.south west) rectangle ([xshift=4mm]interior.north west)
+			node[anchor=north,xshift=-2mm,white]{\bfseries #1};
+	}
+}
+\newtcolorbox{terminal}{enhanced,
+	boxrule=0.3mm,
+	%height=46pt,height plus=146pt,
+	left=5mm,
+	right=1mm,top=1mm,bottom=1mm,
+	colback=green!5,
+	colframe=green!40!black,
+	%underlay={
+	%	\path[fill=green!40!black] (interior.south west) rectangle ([xshift=4mm]interior.north west)
+	%		node[anchor=east,xshift=-2mm,white,rotate=90]{terminal};
+	%}
+}
 
 \usepackage{theorem}
 \theorembodyfont{\upshape}
 \newtheorem{exercise}{Exercise:}
 \newtheorem{question}{Question:}
+\tcolorboxenvironment{exercise}{enhanced jigsaw, colframe=blue!80!black, interior hidden}
+\newtcolorbox{code}[1][]{left=5mm,right=1mm,top=1mm,right=1mm, colframe=red!40!black, #1}
+
+
+\usepackage{theorem}
+\theorembodyfont{\upshape}
+
 \usepackage{hyperref}
 \hypersetup{%
   colorlinks,
   urlcolor = DarkRed,
 }%
+\usepackage{fancyvrb}
 
-
-\pagestyle{headings}
 \begin{document}
 \maketitle
 %\tableofcontents
@@ -69,36 +111,34 @@ takes to find and execute the command.
 \end{enumerate}
 
 
-\clearpage\section{Creating a shell script}
+\section{Creating a shell script}
 A shell script is just a text file, so any good text editor will do.  I use
 \verb'vi', but that is a matter of familiarity.  Another good editor for use
 on the terminal is \verb'nano'.  The file just contains commands, just as if typed in at the terminal.
 
 
 \paragraph{For example:} the following script is put in a file \texttt{ascript}
-  \begin{tcolorbox}[title=script \texttt{ascript}]
+\begin{code}[title=\texttt{ascript}]
     \verbatiminput{scripts/ascript}
-  \end{tcolorbox}
+  \end{code}
 
 \paragraph{The file has to have its execute bit set } in order for it
 to be used as a command
-\begin{tcolorbox}[colframe=Green]
-\begin{minted}{shell-session}
+\begin{terminal}
+\begin{verbatim}
 $ chmod +x ascript
-$
-\end{minted}
-\end{tcolorbox}
+\end{verbatim}
+\end{terminal}
 It can now be run like any other unix command
-\begin{tcolorbox}[colframe=Green]
-\begin{minted}{shell-session}
+\begin{terminal}
+\begin{verbatim}
 $ ./ascript
-$
-\end{minted}
-\end{tcolorbox}
+\end{verbatim}
+\end{terminal}
 The execute bit needs only setting the once.
 
-\begin{tcolorbox}[colframe=Green]
-\begin{minted}{shell-session}
+\begin{terminal}
+\begin{verbatim}
 $ vi ascript
 $ chmod +x ascript
 $ ./ascript
@@ -111,17 +151,17 @@ Tue  4 Dec 12:26:02 GMT 2018
 cgam1
 /home/cgam1/unix/scripts
 $
-\end{minted}
-\end{tcolorbox}
+\end{verbatim}
+\end{terminal}
 
 \paragraph{shebang line}
 There is a convention that scripts start with a \emph{shebang} line, that
 starts with a \verb'#!' pair of characters.
-\begin{tcolorbox}
-\begin{minted}{bash}
+\begin{code}
+\begin{verbatim}
 #!/bin/bash
-\end{minted}
-\end{tcolorbox}
+\end{verbatim}
+\end{code}
 The line is used to give the interpreter used for the file.  It allows shell
 scripts to be written in a variety of languages, bash shell, python, sed, awk,
 etc.
@@ -140,31 +180,36 @@ $\langle$\emph{directory name}$\rangle$ command
 
 \paragraph{To find the current working directory} use the
 \texttt{pwd} command.  Usually the modern convention is to have the
-prompt show the working directory\marginpar{or sometimes the last
-  folder in the working directory}.  The \texttt{pwd} command is
+prompt show the working directory
+or sometimes the last
+  folder in the working directory.  The \texttt{pwd} command is
 useful to use in scripts.
 
 \paragraph{When referring to files} it is in relation to the
-\emph{working directory}\marginpar{Some editors default to the
+ \emph{working directory}.  Some editors default to the
   \textsf{Documents} directory.  If your script is saved there you
   will need to \texttt{cd Documents} to make this the working
-  directory}.
+  directory.
 A plain file-name refers to a file in the working directory.  A name
 prefixed with a directory name (\texttt{directory/file}) it refers to
 a file in that sub-directory.
 
 \subsection{Aside on missing files}
 Try the following in the command shell
-\begin{minted}[frame=leftline,rulecolor=\color{Green},framerule=3pt]{bash}
+\begin{terminal}
+\begin{verbatim}
 mkdir folder
 cp *.h folder
-\end{minted}
+\end{verbatim}
+\end{terminal}
 You should get an error as follows
-\begin{minted}[frame=leftline,rulecolor=\color{Navy},framerule=1pt]{shell-session}
+\begin{terminal}
+\begin{verbatim}
 shell$ mkdir folder
 shell$ cp *.h folder
 cp: cannot stat '*.h': No such file or directory
-\end{minted}
+\end{verbatim}
+\end{terminal}
 The problem is that there are no files ending in a \textsf{.h}, the
 exact reason for the error is dependent on the way the shell handles
 the \textsf{*.h}
@@ -172,33 +217,41 @@ the \textsf{*.h}
 \section{Command-line parameters }
 We want to be able to make scripts that can be given parameters, such
 as a directory name.  We can call these like any other command
-\begin{minted}[frame=leftline,rulecolor=\color{Navy},framerule=1pt]{bash}
+\begin{verbatim}
 scriptname foldername filename
-\end{minted}
+\end{verbatim}
 These are accessed using special variables
 \texttt{\$0}\ldots\texttt{\$9}
 \begin{exercise}
   Try the following script, take care with the quotes
-  \inputminted[label=ascript,frame=leftline,rulecolor=\color{Green},framerule=3pt]{bash}{scripts/name}
+  \begin{code}
+  \VerbatimInput{scripts/name}
+  \end{code}
 Then use the following parameters running the script from the shell
-\begin{minted}[frame=leftline,rulecolor=\color{Green},framerule=3pt]{text}
-names
-names fred
-names fred flintstone
-\end{minted}
+\begin{terminal}
+\begin{verbatim}
+$ names
+$ names fred
+$ names fred flintstone
+\end{verbatim}
+\end{terminal}
 Note how variables that have not been set are expanded
 \end{exercise}
 
-\paragraph{Parameters can be used in any way}
+\paragraph{Parameters can be used in any way}~\\
 \begin{exercise}Create a script \texttt{initf}
-    \inputminted[label=ascript,frame=leftline,rulecolor=\color{Green},framerule=3pt]{bash}{scripts/initf}
+\begin{code}[title=\texttt{inif}]
+\VerbatimInput{scripts/initf}
+\end{code}
 Then try it with
-\begin{minted}[frame=leftline,rulecolor=\color{Green},framerule=3pt]{text}
-intif .
-mkdir folder
-initf folder
-initf
-\end{minted}
+\begin{terminal}
+\begin{verbatim}
+$ intif .
+$ mkdir folder
+$ initf folder
+$ initf
+\end{verbatim}
+\end{terminal}
 \begin{question}
   What is the meaning of the dot \texttt{.} as a directory name?
 \end{question}
@@ -210,25 +263,25 @@ initf
 \section{Variables}
 Shell variables are assigned by simply using their name with an equals
 sign and a value
-\inputminted[frame=leftline,rulecolor=\color{Navy},framerule=1pt]{console}{scripts/vareg}
+\VerbatimInput{scripts/vareg}
 Note the lack of spaces round the equals sign.
 
 Try
-\inputminted[frame=leftline,rulecolor=\color{Green},framerule=3pt]{bash}{scripts/varex}
+\VerbatimInput{scripts/varex}
 
 \subsection{User input}
 The \texttt{read} command can be used to set variables from used input
-\inputminted[frame=leftline,rulecolor=\color{Green},framerule=3pt]{bash}{scripts/readex}
+\VerbatimInput{scripts/readex}
 \subsection{Variable substitution}
 To use a variable prefix it by a dollar sign \texttt{\$}.  The
 variable name and its dollar are substituted for by the text stored in
 the variable.  If the variable is unset, a blank is substituted.
-\inputminted[frame=leftline,rulecolor=\color{Green},framerule=3pt]{bash}{scripts/blankex}
+\VerbatimInput{scripts/blankex}
 
 \subsection{Arithmetic}
 Variable substitution is by the text the variable contains.  If we
 want to perform arithmetic we need a different syntax
- \inputminted[frame=leftline,rulecolor=\color{Green},framerule=3pt]{bash}{scripts/mathex}
+ \VerbatimInput{scripts/mathex}
 By putting the expression inside the \texttt{\$((}\ldots\texttt{))}
 several things happen
 \begin{enumerate}
@@ -241,13 +294,13 @@ several things happen
 The Unix shell gives us the full range of conditional operations.
 
 \paragraph{Logic values} in unix are based on the exit status of
-commands\marginpar{technically an exit status of 0 is true, non-0 is
-  false}
+commands technically an exit status of 0 is true, non-0 is
+  false
 
 \subsection{tests}
 In order to do logic we need to be able to do tests.  For this we need
 a function \texttt{test} (more commonly seen as \texttt{[ ]}) some
-common tests are\marginpar{see \texttt{man test}}
+common tests are see \texttt{man test}
 \begin{itemize}
 \item \verb*:[ -e name ]: the file called name exists
 \item \verb*:[ -f name ]: the file name exists and is an ordinary name
@@ -259,20 +312,19 @@ Note the need for spaces in the expressions
 
 \subsection{if\ldots fi}
 Try the following
-\inputminted[frame=leftline,rulecolor=\color{Green},framerule=3pt]{bash}{scripts/life}
+\VerbatimInput{scripts/life}
 Note the spaces in the test and the \texttt{if..then..else..fi}
 pattern.  The test is done as a string comparison, note how the
 variable expansion is in a string quote.  This avoids the problem
 where nothing is entered and the variable expansion is a blank.
 
-\clearpage
 \paragraph{We can use these to check that a directory exists before creating it.}
-\inputminted[frame=leftline,rulecolor=\color{Green},framerule=3pt]{bash}{scripts/dirchk}
+\VerbatimInput{scripts/dirchk}
 
 \subsection{Multiple choises}
 For a multi-way decision the
 \texttt{if}\ldots\texttt{then}\ldots\texttt{elif} exists
-\inputminted[frame=leftline,rulecolor=\color{Navy},framerule=1pt]{bash}{scripts/ifelif}
+\VerbatimInput{scripts/ifelif}
 
 
 \section{Repetition -- loops}
@@ -280,7 +332,7 @@ With loops we can perform operations repetitively.
 
 \subsection{while}
 We can keep asking a question until a condition is met.
-\inputminted[frame=leftline,rulecolor=\color{Green},framerule=3pt]{bash}{scripts/liferepr}
+\VerbatimInput{scripts/liferepr}
 Note that the \texttt{do}\ldots\texttt{done} marks the ends of the
 section of code repeated for each iteration of the loop
 
@@ -289,43 +341,41 @@ The \texttt{shift} operation modifies the parameters supplied to the
 script in \texttt{\$1}, \texttt{\$2}, etc.
 
 Try the following
-\inputminted[frame=leftline,rulecolor=\color{Green},framerule=3pt]{bash}{scripts/shiftex}
+\VerbatimInput{scripts/shiftex}
 Shift is useful for iterating over a list of parameters
-\inputminted[frame=leftline,rulecolor=\color{Green},framerule=3pt]{bash}{scripts/shiftsum}
+\VerbatimInput{scripts/shiftsum}
 
 \subsection{for}
 The other operation useful for loops is the \texttt{for}.
 This takes a list of values and sets a variable to each one in turn.
-\inputminted[frame=leftline,rulecolor=\color{Green},framerule=3pt]{bash}{scripts/forabc}
+\VerbatimInput{scripts/forabc}
 
 \subsection{Backquotes and commands}
 The list of values may not be know ahead of time.  What we want is a
 way of generating a list of value to put in the code.
 
 We can do this by using file globbing
-\inputminted[frame=leftline,rulecolor=\color{Green},framerule=3pt]{bash}{scripts/forglob}
+\VerbatimInput{scripts/forglob}
 
 We can use the backquote notation to include the output of a command
 
 Put the following in a text file, call the file \texttt{sample.text}
-\inputminted[frame=leftline,rulecolor=\color{Green},framerule=3pt]{text}{scripts/sample.text}
+\VerbatimInput{scripts/sample.text}
 
 
 
 Then try
-\inputminted[frame=leftline,rulecolor=\color{Green},framerule=3pt]{bash}{scripts/fortext}
+\VerbatimInput{scripts/fortext}
 
 There is an alternative notation (that I prefer) that uses the
 characters \texttt{\$( )}
-\inputminted[frame=leftline,rulecolor=\color{Green},framerule=3pt]{bash}{scripts/fortextalt}
-
-
+\VerbatimInput{scripts/fortextalt}
 
 \section{Exercises}
 \begin{exercise}
   Write a script to take a list of filenames and write out some
-  information about each\marginpar{\textbf{hint:} take a look at the
-    \texttt{file} command to identify the file}
+  information about each.
+  %\marginpar{\textbf{hint:} take a look at the \texttt{file} command to identify the file}
 \end{exercise}
 
 \begin{exercise}
@@ -349,7 +399,7 @@ Write a script to count-down from
 \end{exercise}
 
 
-\clearpage\appendix
+\appendix
 \section{POSIX Guidelines}
 From ``Utility Syntax Guidelines''
 \url{http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap12.html#tag_12_02}
@@ -374,9 +424,3 @@ Multi-digit options should not be allowed.
 
 \end{document}
 
-
-%% Local Variables:
-%% mode:tabkey2
-%% mode:flyspell
-%% mode:reftex
-%% End:
