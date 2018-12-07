@@ -1,5 +1,5 @@
 %&pdflatex
-\documentclass[a4paper]{article}
+\documentclass[12pt,a4paper]{article}
 \usepackage[british]{babel}
 \usepackage[T1]{fontenc}
 \usepackage[ttdefault=true]{AnonymousPro}
@@ -7,9 +7,8 @@
 
 \title{Unix Shell scripting}
 \author{Dr Alun Moon}
-\usepackage[svgnames]{xcolor}
 
-\usepackage{siunitx}
+\usepackage[binary-units]{siunitx}
 
 \usepackage[skins]{tcolorbox}
 
@@ -22,7 +21,7 @@
 
 \usepackage{tcolorbox}
 \tcbuselibrary{skins}
-\tcbset{boxrule=0.3mm}
+\tcbset{boxrule=0.3mm,fonttitle=\bfseries\ttfamily}
 \newtcolorbox{note}[1]{enhanced,
     boxrule=0.3mm,
     left=5mm,right=1mm, top=1mm,bottom=1mm,
@@ -60,29 +59,80 @@
 \tcolorboxenvironment{exercise}{enhanced jigsaw, colframe=blue!80!black, interior hidden}
 \newtcolorbox{code}[1][]{left=5mm,right=1mm,top=1mm,right=1mm, colframe=red!40!black, #1}
 
+\usepackage{array,booktabs}
+\usepackage{fancyvrb}
 
-\usepackage{theorem}
-\theorembodyfont{\upshape}
 
-\usepackage{hyperref}
+\usepackage{hyperref, natbib}
 \hypersetup{%
   colorlinks,
-  urlcolor = DarkRed,
+  urlcolor = red!20!black,
 }%
-\usepackage{fancyvrb}
+
+\newcommand{\unix}{\textsc{Unix}}
+\newcommand{\ascii}{\textsc{ascii}}
 
 \begin{document}
 \maketitle
 %\tableofcontents
+
+\section{Tools}
+
+\paragraph{A good text editor} C programs are just text, so any
+good programmer's text editor will do.  I happen to use \verb'vi'/\verb'vim'
+since I am familiar with it from long use.  Other editors will do, some people
+find \verb'nano' is slightly more friendly to new users.  Editors written for
+programming tend to have syntax highlighting and support for navigating through
+the code, these are helpful but not essential.
+
+\section{Conventions}
+In this document there are several conventions used.
+
+\paragraph{Terminal sessions} are shown in green boxes, the shell prompt is
+shown as a single dollar sign \verb'$'.
+\begin{terminal}
+\begin{verbatim}
+$ ls
+hello  hello.c
+$
+\end{verbatim}
+\end{terminal}
+
+\paragraph{Program code} is shown in red boxes.  Where this belongs in a
+particular file, the file-name is shown at the top.
+\begin{code}[title=filename.c]
+\begin{verbatim}
+int x;
+\end{verbatim}
+\end{code}
+
+\paragraph{Highlights}
+Some comments to alert you of particular situations are highlighted.
+\begin{note}{\Large\textbf{i}}
+        Important information to note.
+\end{note}
+
+\begin{note}{\Large !}
+        Warning's of potential ``gotchas'' are
+highlighted.
+\end{note}
+
+\begin{note}{\scriptsize\dbend}
+        Potentially tricky concepts.
+\end{note}
+
+\begin{note}{\small\faWarning}
+        Dangerous code.
+\end{note}
+
+\paragraph{Spaces} In some places spaces in the bash script are important.
+Where necessary these will be shown as a \verb*| | symbol, for example
+\verb*'if [ -f name'
+
 \section{Introduction}
 \paragraph{Shell scripts} in Unix are a very powerfull tool, they
 form much of the standard system as installed.  Many file handling and
 administrative tasks are aided and automated by use of shell scripts.
-
-\subsection{Spaces}
-In some places spaces in the bash script are important.  Where
-necessary these will be shown as a \verb*| | symbol, for example
-\verb*'if [ -f name'
 
 \subsection{Editing}
 \paragraph{A Script is just a text file containing a sequence of
@@ -118,7 +168,7 @@ on the terminal is \verb'nano'.  The file just contains commands, just as if typ
 
 
 \paragraph{For example:} the following script is put in a file \texttt{ascript}
-\begin{code}[title=\texttt{ascript}]
+\begin{code}[title=ascript]
     \verbatiminput{scripts/ascript}
   \end{code}
 
@@ -162,37 +212,31 @@ starts with a \verb'#!' pair of characters.
 #!/bin/bash
 \end{verbatim}
 \end{code}
-The line is used to give the interpreter used for the file.  It allows shell
-scripts to be written in a variety of languages, bash shell, python, sed, awk,
-etc.
+The line is used to tell the operating system whichinterpreter used for the
+file.  It allows shell scripts to be written in a variety of languages, bash
+shell, python, sed, awk, etc.
 
 \section{Directories and the Working Directory}
-The concept of the working directory is important when working with
-files and scripts.  The shell can be thought of as being in the
-\emph{current working directory} commands that operate on files use
-this as the default directory.
+The concept of the working directory is important when working with files and
+scripts in the terminal and shell.  The shell can be thought of as being in the
+\emph{current working directory} commands that operate on files use this as the
+default directory.
 
-For example \texttt{ls} with no parameters lists the files in the
-working directory.
+For example \texttt{ls} with no parameters lists the files in the working
+directory.
 
 \paragraph{To change the working directory.}  use the \texttt{cd}
 $\langle$\emph{directory name}$\rangle$ command
 
-\paragraph{To find the current working directory} use the
-\texttt{pwd} command.  Usually the modern convention is to have the
-prompt show the working directory
-or sometimes the last
-  folder in the working directory.  The \texttt{pwd} command is
-useful to use in scripts.
+\paragraph{To find the current working directory} use the \texttt{pwd} command.
+Usually the modern convention is to have the prompt show the working directory
+or sometimes the last folder in the working directory.  The \texttt{pwd}
+command is useful to use in scripts.
 
-\paragraph{When referring to files} it is in relation to the
- \emph{working directory}.  Some editors default to the
-  \textsf{Documents} directory.  If your script is saved there you
-  will need to \texttt{cd Documents} to make this the working
-  directory.
-A plain file-name refers to a file in the working directory.  A name
-prefixed with a directory name (\texttt{directory/file}) it refers to
-a file in that sub-directory.
+\paragraph{When referring to files} it is in relation to the \emph{working
+directory}.  A plain file-name refers to a file in the working
+directory.  A name prefixed with a directory name (\texttt{directory/file}) it
+refers to a file in that sub-directory.
 
 \subsection{Aside on missing files}
 Try the following in the command shell
@@ -210,9 +254,8 @@ shell$ cp *.h folder
 cp: cannot stat '*.h': No such file or directory
 \end{verbatim}
 \end{terminal}
-The problem is that there are no files ending in a \textsf{.h}, the
-exact reason for the error is dependent on the way the shell handles
-the \textsf{*.h}
+The problem is that there are no files ending in a \textsf{.h}, the exact
+reason for the error is dependent on the way the shell handles the \textsf{*.h}
 
 \section{Command-line parameters }
 We want to be able to make scripts that can be given parameters, such
