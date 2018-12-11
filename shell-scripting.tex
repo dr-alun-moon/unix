@@ -63,9 +63,11 @@
 %\usepackage{fancyvrb}
 \usepackage[os=win]{menukeys}
 
-\usepackage{hyperref, natbib}
+\usepackage{natbib}
+\usepackage{hyperref}
 \hypersetup{%
   colorlinks,
+  citecolor=black,
   urlcolor = red!20!black,
 }%
 
@@ -84,6 +86,10 @@ since I am familiar with it from long use.  Other editors will do, some people
 find \verb'nano' is slightly more friendly to new users.  Editors written for
 programming tend to have syntax highlighting and support for navigating through
 the code, these are helpful but not essential.
+
+\begin{note}{\Large\textbf i}
+	There is a good introduction to \texttt{vi} in \cite[chapter 12]{Shotts}
+\end{note}
 
 \section{Conventions}
 In this document there are several conventions used.
@@ -516,6 +522,9 @@ Write a script to count-down from
   Write a script supporting a menu system of your own design
 \end{exercise}
 
+
+\bibliographystyle{plainnat}
+\bibliography{unix}
 
 \appendix
 \section{POSIX Guidelines}

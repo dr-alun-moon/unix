@@ -1,0 +1,18 @@
+#/bin/bash
+declare -A counts
+for d in ${PATH//:/ }
+do
+	for f in $d/*
+	do
+		type=$(file -Lb $f|cut -d, -f1)
+		counts["$type"]=$((${counts["$type"]}+1))
+	done
+done
+
+declare -i total
+for key in "${!counts[@]}"
+do
+	total+=${counts[$key]}
+	echo -e ${counts[$key]} "\t" $key
+done
+echo -e $total"\t" total

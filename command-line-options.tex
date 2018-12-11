@@ -1,35 +1,86 @@
 %&pdflatex
-\documentclass{article}
+\documentclass[12pt,a4paper]{article}
 \usepackage[british]{babel}
-\usepackage[
-	a5paper,
-    includeall,
-    marginpar=1.5cm,
-    %hscale=0.707,
-    hscale=0.75,
-	vscale=0.9
-    ]{geometry}
-\usepackage{hyperref}
-\title{Unix Shell Scripting \\ Command Line Options}
-\author{%
-Dr Alun Moon\thanks{\url{alun.moon@northumbria.ac.uk}}\\
-Dr David Kendall\thanks{\url{david.kendall@northumbria.ac.uk}}\\
-Dr Michael Brockway\thanks{\url{michael.brockway@northumbria.ac.uk}}\\
-Dr Neil Elliot\thanks{\url{neil.elliot@northumbria.ac.uk}}
+\usepackage[T1]{fontenc}
+\usepackage[ttdefault=true]{AnonymousPro}
+\usepackage[vscale=0.8]{geometry}
+
+\title{Unix Shell scripting}
+\author{Dr Alun Moon}
+
+\usepackage[binary-units]{siunitx}
+
+\usepackage[skins]{tcolorbox}
+
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usetikzlibrary{positioning,arrows.meta}
+\usetikzlibrary{decorations,decorations.text}
+
+\usepackage{manfnt,fontawesome}
+
+\usepackage{tcolorbox}
+\tcbuselibrary{skins}
+\tcbset{boxrule=0.3mm,fonttitle=\bfseries\ttfamily}
+\newtcolorbox{note}[1]{enhanced,
+    boxrule=0.3mm,
+    left=5mm,right=1mm, top=1mm,bottom=1mm,
+    colback=yellow!50,
+    sharp corners,rounded corners=southeast,arc is
+	angular,arc=3mm,
+    colframe=yellow!20!black,
+    underlay={%
+        \path[fill=tcbcol@back!80!black]
+	            ([yshift=3mm]interior.south east)--++(-0.4,-0.1)--++(0.1,-0.2);
+        \path[draw=tcbcol@frame,shorten <=-0.05mm,shorten >=-0.05mm]
+	            ([yshift=3mm]interior.south east)--++(-0.4,-0.1)--++(0.1,-0.2);
+        \path[fill=yellow!50!black,draw=none]
+	            (interior.south west) rectangle ([xshift=4mm]interior.north west)
+	            node[anchor=north,xshift=-2mm,white]{\bfseries #1};
+    }
+}
+\newtcolorbox{terminal}{enhanced,
+    boxrule=0.3mm,
+	left=5mm, right=1mm,top=1mm,bottom=1mm,
+	colback=green!5,
+	colframe=green!40!black,
 }
 
-\usepackage{fancyvrb,listings,verbatim,tcolorbox}
+\usepackage{theorem}
+\theorembodyfont{\upshape}
+\newtheorem{exercise}{Exercise:}
+\newtheorem{question}{Question:}
+\tcolorboxenvironment{exercise}{enhanced
+jigsaw,
+colframe=blue!80!black,
+interior
+hidden}
+\newtcolorbox{code}[1][]{left=5mm,right=1mm,top=1mm,right=1mm,
+colframe=red!40!black,
+#1}
 
+\usepackage{array,booktabs}
+%\usepackage{fancyvrb}
+\usepackage[os=win]{menukeys}
+
+\usepackage{natbib}
+\usepackage{hyperref}
+\hypersetup{%
+  colorlinks, citecolor=black,
+  urlcolor=red!20!black,
+}%
+\usepackage{fancyvrb}
+  
 \newcommand{\required}[1]{$\langle$\itshape #1$\rangle$}
 \newcommand{\optional}[1]{$[$\itshape #1$]$}
 \begin{document}
 \maketitle
-\newpage
+
 \section{Command line options and scripts}
 Shell scripts are almost always \emph{not-interactive}.
 User input to the script is provided using command-line options and parameters.
 
-\url{http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap12.html}
+\noindent\url{http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap12.html}
 
 \paragraph{Examples} are
 \begin{verbatim}

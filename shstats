@@ -1,0 +1,11 @@
+#/bin/bash
+declare -i total
+declare -i script
+declare -i elf
+for d in ${PATH//:/ }
+do
+	total+=$(ls $d|wc -l)
+	script+=$(file $d/*|grep POSIX|wc -l)
+	elf+=$(file $d/*|grep ELF| wc -l)
+done
+echo $script '/' $elf '/' $total 

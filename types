@@ -1,0 +1,10 @@
+#/bin/bash
+declare -A total
+for d in ${PATH//:/ }
+do
+	for f in $d/*
+	do
+		type=$(file -Lb $f|cut -d, -f1)
+		echo $type
+	done
+done
