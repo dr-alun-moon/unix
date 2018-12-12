@@ -1,0 +1,6 @@
+let n=$1
+declare s
+for (( ; n ; n-- ))
+do s+=$2
+done
+echo -en $s

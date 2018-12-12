@@ -1,0 +1,37 @@
+#!/bin/bash
+# pretty print a table.
+
+function html()
+{
+	echo '<table>'
+	sed -e's:^:<tr><td>:' \
+		-e's:$:</td></tr>:' \
+		-e's:\t:</td><td>:' 
+	echo '</table>'
+}
+
+function tbl()
+{
+	echo '.TS'
+	echo $1'.' && shift
+	cat $*
+	echo '.TE'
+}
+
+function usage()
+{
+	cat<<-help
+	Usage: pptbl [-h] [-m]  [-t fmt]
+		-m     : html table
+		-t fmt : roff tbl, fmt is table specifier string
+		-h     : show help
+	help
+}
+
+getopts 'hmt:' form
+shift $((OPTIND-1))
+case $form in
+ 	m) html $* ;;
+ 	t) tbl $OPTARG $* ;;
+ 	h) usage ;;
+esac

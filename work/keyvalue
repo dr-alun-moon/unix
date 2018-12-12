@@ -1,0 +1,31 @@
+#!/bin/bash
+while getopts 'f:k:rw:h' flag
+do
+	case $flag in
+		f) kvfile=$OPTARG ;;
+		k) key=$OPTARG ;;
+		r) act='read' ;;
+		w) act='write' && value=$OPTARG ;;
+		h|?)
+			cat<<-help
+				Usage: keyvalue -f file -k key [-r|-w value]
+					-f filename : rc file to use
+					-k keyname  : key name to operate
+					-r          : read value for key
+					-w value    : write value for key
+			help
+			;;
+	esac
+done
+
+case ${act:-'read'} in
+	'read')
+		value=$(grep "^$key" $kvfile | sed -e 's/[^:=]*[:=]//' -e 's/^[ \t]*//' -e 's/[ \t]*$//')
+		echo $value
+		;;
+	'write')
+		sed -i -e"s/^$key\([:=]\).*/$key\1$value/" $kvfile ||
+		echo "$key:$value" >> $kvfile # append new value (works for new values as well)
+		;;
+esac
+

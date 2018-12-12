@@ -1,0 +1,8 @@
+declare -A hist
+while read -N 1 ch
+do hist[$c]= "${hist[$ch]}x"
+done
+for c in ${!hist[*]}
+do echo $c ${hist[$c]}
+done
+
