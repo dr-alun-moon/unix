@@ -1,0 +1,20 @@
+#!/bin/bash
+style=$1 && shift
+
+case $style in
+	-html)
+		sed -e"1i <Table>
+		    i <tr><td>
+		    s'\t'</td><td>'
+		    a </td></tr>
+		    \$a </table>" 
+		;;
+	-tbl)
+		fmt=$1 && shift
+		echo "roff tbl request (style ${fmt:?Style not set})"
+		;;
+	*)
+		echo "not right"
+		exit 1
+		;;
+esac
