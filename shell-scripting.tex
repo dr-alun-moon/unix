@@ -10,8 +10,6 @@
 
 \usepackage[binary-units]{siunitx}
 
-\usepackage[skins]{tcolorbox}
-
 \usepackage{tikz}
 \usetikzlibrary{calc}
 \usetikzlibrary{positioning,arrows.meta}
@@ -19,12 +17,10 @@
 
 \usepackage{manfnt,fontawesome}
 
-\usepackage{tcolorbox}
+\usepackage[skins]{tcolorbox}
 \tcbuselibrary{skins}
-\tcbset{boxrule=0.3mm,fonttitle=\bfseries\ttfamily}
+\tcbset{boxrule=0.3mm,left=5mm,right=1mm, top=1mm,bottom=1mm,fonttitle=\bfseries\ttfamily}
 \newtcolorbox{note}[1]{enhanced,
-    boxrule=0.3mm,
-    left=5mm,right=1mm, top=1mm,bottom=1mm,
     colback=yellow!50,
     sharp corners,rounded corners=southeast,arc is
 	angular,arc=3mm,
@@ -39,28 +35,16 @@
 			node[anchor=north,xshift=-2mm,white]{\bfseries #1};
 	}
 }
-\newtcolorbox{terminal}{enhanced,
-	boxrule=0.3mm,
-	%height=46pt,height plus=146pt,
-	left=5mm,
-	right=1mm,top=1mm,bottom=1mm,
-	colback=green!5,
-	colframe=green!40!black,
-	%underlay={
-	%	\path[fill=green!40!black] (interior.south west) rectangle ([xshift=4mm]interior.north west)
-	%		node[anchor=east,xshift=-2mm,white,rotate=90]{terminal};
-	%}
-}
+\newtcolorbox{terminal}{enhanced, colback=green!5, colframe=green!40!black, }
+\newtcolorbox{code}[1][]{colframe=red!40!black, #1}
 
 \usepackage{theorem}
 \theorembodyfont{\upshape}
 \newtheorem{exercise}{Exercise:}
 \newtheorem{question}{Question:}
 \tcolorboxenvironment{exercise}{enhanced jigsaw, colframe=blue!80!black, interior hidden}
-\newtcolorbox{code}[1][]{left=5mm,right=1mm,top=1mm,right=1mm, colframe=red!40!black, #1}
 
 \usepackage{array,booktabs}
-%\usepackage{fancyvrb}
 \usepackage[os=win]{menukeys}
 
 \usepackage{natbib}
