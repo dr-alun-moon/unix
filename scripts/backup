@@ -1,0 +1,3 @@
+#!/bin/sh
+# Example backup script
+cp $1 $HOME/.backups

@@ -19,7 +19,7 @@
 
 \usepackage[skins]{tcolorbox}
 \tcbuselibrary{skins}
-\tcbset{boxrule=0.3mm,left=5mm,right=1mm, top=1mm,bottom=1mm,fonttitle=\bfseries\ttfamily}
+\tcbset{boxrule=0.3mm,left=5mm,right=1mm, top=1mm,bottom=1mm }
 \newtcolorbox{note}[1]{enhanced,
     colback=yellow!50,
     sharp corners,rounded corners=southeast,arc is
@@ -35,14 +35,15 @@
 			node[anchor=north,xshift=-2mm,white]{\bfseries #1};
 	}
 }
-\newtcolorbox{terminal}{enhanced, colback=green!5, colframe=green!40!black, }
-\newtcolorbox{code}[1][]{colframe=red!40!black, #1}
+\newtcolorbox{terminal}{enhanced, colback=green!5, colframe=green!40!black }
+\newtcolorbox{code}[1][]{colframe=red!40!black,
+						 fonttitle=\bfseries\ttfamily, #1}
 
 \usepackage{theorem}
 \theorembodyfont{\upshape}
 \newtheorem{exercise}{Exercise:}
 \newtheorem{question}{Question:}
-\tcolorboxenvironment{exercise}{enhanced jigsaw, colframe=blue!80!black, interior hidden}
+\tcolorboxenvironment{exercise}{enhanced jigsaw, colframe=blue!80!black,interior hidden}
 
 \usepackage{array,booktabs}
 \usepackage[os=win]{menukeys}
@@ -211,70 +212,70 @@ The line is used to tell the operating system whichinterpreter used for the
 file.  It allows shell scripts to be written in a variety of languages, bash
 shell, python, sed, awk, etc.
 
-\section{Directories and the Working Directory}
-The concept of the working directory is important when working with files and
-scripts in the terminal and shell.  The shell can be thought of as being in the
-\emph{current working directory} commands that operate on files use this as the
-default directory.
-
-For example \texttt{ls} with no parameters lists the files in the working
-directory.
-
-\paragraph{To change the working directory.}  use the \texttt{cd}
-$\langle$\emph{directory name}$\rangle$ command
-
-\paragraph{To find the current working directory} use the \texttt{pwd} command.
-Usually the modern convention is to have the prompt show the working directory
-or sometimes the last folder in the working directory.  The \texttt{pwd}
-command is useful to use in scripts.
-
-\paragraph{When referring to files} it is in relation to the \emph{working
-directory}.  A plain file-name refers to a file in the working
-directory.  A name prefixed with a directory name (\texttt{directory/file}) it
-refers to a file in that sub-directory.
-
-\begin{exercise}~\\[-1em]
-\begin{enumerate}
-\item {Create a directory} in which to work.
-\begin{code}
-\begin{verbatim}
-$ mkdir work
-\end{verbatim}
-\end{code}
-\item Change into that directory
-	\begin{code}
-\begin{verbatim}
-$ cd work
-\end{verbatim}
-	\end{code}
-\item Create two more
-	\begin{code}
-\begin{verbatim}
-$ mkdir scripts
-$ mkdir texts
-\end{verbatim}
-	\end{code}
-\item Check where you are.   The result here may depend on what machine you are
-	on, and what other directory operations you have done.  The path listed as
-	a result of \verb'pwd' should end in \path{/work} if you have followed the
-	first two steps.
-	\begin{code}
-\begin{verbatim}
-$ pwd
-/home/student/work
-$
-\end{verbatim}
-	\end{code}
-\item List what this directory has as its contents
-	\begin{code}
-\begin{verbatim}
-$ ls
-scripts  texts
-$
-\end{verbatim}
-	\end{code}
-\end{enumerate}
-\end{exercise}
+%- \section{Directories and the Working Directory}
+%- The concept of the working directory is important when working with files and
+%- scripts in the terminal and shell.  The shell can be thought of as being in the
+%- \emph{current working directory} commands that operate on files use this as the
+%- default directory.
+%- 
+%- For example \texttt{ls} with no parameters lists the files in the working
+%- directory.
+%- 
+%- \paragraph{To change the working directory.}  use the \texttt{cd}
+%- $\langle$\emph{directory name}$\rangle$ command
+%- 
+%- \paragraph{To find the current working directory} use the \texttt{pwd} command.
+%- Usually the modern convention is to have the prompt show the working directory
+%- or sometimes the last folder in the working directory.  The \texttt{pwd}
+%- command is useful to use in scripts.
+%- 
+%- \paragraph{When referring to files} it is in relation to the \emph{working
+%- directory}.  A plain file-name refers to a file in the working
+%- directory.  A name prefixed with a directory name (\texttt{directory/file}) it
+%- refers to a file in that sub-directory.
+%- 
+%- \begin{exercise}~\\[-1em]
+%- \begin{enumerate}
+%- \item {Create a directory} in which to work.
+%- \begin{code}
+%- \begin{verbatim}
+%- $ mkdir work
+%- \end{verbatim}
+%- \end{code}
+%- \item Change into that directory
+%- 	\begin{code}
+%- \begin{verbatim}
+%- $ cd work
+%- \end{verbatim}
+%- 	\end{code}
+%- \item Create two more
+%- 	\begin{code}
+%- \begin{verbatim}
+%- $ mkdir scripts
+%- $ mkdir texts
+%- \end{verbatim}
+%- 	\end{code}
+%- \item Check where you are.   The result here may depend on what machine you are
+%- 	on, and what other directory operations you have done.  The path listed as
+%- 	a result of \verb'pwd' should end in \path{/work} if you have followed the
+%- 	first two steps.
+%- 	\begin{code}
+%- \begin{verbatim}
+%- $ pwd
+%- /home/student/work
+%- $
+%- \end{verbatim}
+%- 	\end{code}
+%- \item List what this directory has as its contents
+%- 	\begin{code}
+%- \begin{verbatim}
+%- $ ls
+%- scripts  texts
+%- $
+%- \end{verbatim}
+%- 	\end{code}
+%- \end{enumerate}
+%- \end{exercise}
 
 \section{Files}
 You can create a file with any editor, \verb'vi'/\verb'vim', \verb'nano', or
@@ -303,93 +304,99 @@ to stop entering text and return to the shell's command prompt.
 \end{quote}
 
 
-\subsection{Aside on missing files}
-Try the following in the command shell
-\begin{terminal}
-\begin{verbatim}
-mkdir folder
-cp *.h folder
-\end{verbatim}
-\end{terminal}
-You should get an error as follows
-\begin{terminal}
-\begin{verbatim}
-shell$ mkdir folder
-shell$ cp *.h folder
-cp: cannot stat '*.h': No such file or directory
-\end{verbatim}
-\end{terminal}
-The problem is that there are no files ending in a \textsf{.h}, the exact
-reason for the error is dependent on the way the shell handles the \textsf{*.h}
+%%- \subsection{Aside on missing files}
+%%- Try the following in the command shell
+%%- \begin{terminal}
+%%- \begin{verbatim}
+%%- mkdir folder
+%%- cp *.h folder
+%%- \end{verbatim}
+%%- \end{terminal}
+%%- You should get an error as follows
+%%- \begin{terminal}
+%%- \begin{verbatim}
+%%- shell$ mkdir folder
+%%- shell$ cp *.h folder
+%%- cp: cannot stat '*.h': No such file or directory
+%%- \end{verbatim}
+%%- \end{terminal}
+%%- The problem is that there are no files ending in a \textsf{.h}, the exact
+%%- reason for the error is dependent on the way the shell handles the \textsf{*.h}
 
+\clearpage
 \section{Command-line parameters }
-We want to be able to make scripts that can be given parameters, such
-as a directory name.  We can call these like any other command
-\begin{verbatim}
-scriptname foldername filename
-\end{verbatim}
-These are accessed using special variables
+We want to write scripts than can do the same things to different data.  We
+want to back-up a file, the script can back-up \emph{any-file} but we want to
+be able to tell the script \emph{which} file to back-up at any given time.
+
+\subsection{The shell and parameters}
+When we type a command in the shell, the shell splits that line into words,
+using spaces.  The first word is used as the command (the name of the script),
+the rest of the words are passed to the script as a list of parameters.
+These parameters are accessed using special variables
 \texttt{\$0}\ldots\texttt{\$9}
+
 \begin{exercise}
   Try the following script, take care with the quotes
-  \begin{code}
+  \begin{code}[title=name]
   \verbatiminput{scripts/name}
   \end{code}
 Then use the following parameters running the script from the shell
 \begin{terminal}
 \begin{verbatim}
-$ names
-$ names fred
-$ names fred flintstone
+$ name
+$ name fred
+$ name fred flintstone
 \end{verbatim}
 \end{terminal}
-Note how variables that have not been set are expanded
+Note how variables that have not been set are expanded into blanks.
 \end{exercise}
 
-\paragraph{Parameters can be used in any way}~\\
-\begin{exercise}Create a script \texttt{initf}
-\begin{code}[title=\texttt{inif}]
-\verbatiminput{scripts/initf}
+
+\paragraph{We can use these parameters to write a generic script} that
+operates the same way on different things, we tell the script which thing to
+operate on when we run it.
+
+For example a backup might be\ldots
+\begin{code}[title=backup]
+\verbatiminput{scripts/backup}
 \end{code}
-Then try it with
+This script copies the file given to it as the first word, into the directory
+called \texttt{.backups} in the home directory.
+\begin{note}{\small\faWarning}
+As written this script has problems, it won't work as expected.  \\
+We'll fix this later on.
+\end{note}
+
+\subsection{Multiple parameters}
+We can write a backup script, that backs-up more that one file at a time.
+The script is launched just as before, just now with several words on the
+command-line
 \begin{terminal}
 \begin{verbatim}
-$ intif .
-$ mkdir folder
-$ initf folder
-$ initf
+$ backup names sample.txt main.c lib.c lib.h
 \end{verbatim}
 \end{terminal}
-\begin{question}
-  What is the meaning of the dot \texttt{.} as a directory name?
-\end{question}
-\begin{question}
-  Without parameters, why does the script fail?
-\end{question}
-\end{exercise}
 
 \section{Variables}
 Shell variables are assigned by simply using their name with an equals
 sign and a value
+\begin{terminal}
 \verbatiminput{scripts/vareg}
+\end{terminal}
 Note the lack of spaces round the equals sign.
 
 Try
+\begin{terminal}
 \verbatiminput{scripts/varex}
-
-\subsection{User input}
-The \texttt{read} command can be used to set variables from used input
-\verbatiminput{scripts/readex}
-\subsection{Variable substitution}
-To use a variable prefix it by a dollar sign \texttt{\$}.  The
-variable name and its dollar are substituted for by the text stored in
-the variable.  If the variable is unset, a blank is substituted.
-\verbatiminput{scripts/blankex}
+\end{terminal}
 
 \subsection{Arithmetic}
 Variable substitution is by the text the variable contains.  If we
 want to perform arithmetic we need a different syntax
+\begin{terminal}
  \verbatiminput{scripts/mathex}
+\end{terminal}
 By putting the expression inside the \texttt{\$((}\ldots\texttt{))}
 several things happen
 \begin{enumerate}
@@ -408,10 +415,11 @@ commands technically an exit status of 0 is true, non-0 is
 \subsection{tests}
 In order to do logic we need to be able to do tests.  For this we need
 a function \texttt{test} (more commonly seen as \texttt{[ ]}) some
-common tests are see \texttt{man test}
+common tests are see \texttt{man test}.  \textbf{Note:} in these expressions
+spaces \emph{are important!}, they are shown as a \verb' ' in the text below.
 \begin{itemize}
 \item \verb*:[ -e name ]: the file called name exists
-\item \verb*:[ -f name ]: the file name exists and is an ordinary name
+\item \verb*:[ -f name ]: the file name exists and is an ordinary file
 \item \verb*:[ -d name ]: the file name exists and is a directory
 \item \verb*:[ "string1" = "string2" ]: a string comparison for equality
 \item \verb*:[ N -eq M ]: an integer numeric comparison for equality
@@ -420,7 +428,8 @@ Note the need for spaces in the expressions
 
 \subsection{if\ldots fi}
 Try the following
-\verbatiminput{scripts/life}
+\begin{code}
+\end{code}
 Note the spaces in the test and the \texttt{if..then..else..fi}
 pattern.  The test is done as a string comparison, note how the
 variable expansion is in a string quote.  This avoids the problem
