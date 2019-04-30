@@ -1,0 +1,41 @@
+#!/bin/bash
+
+function help {
+cat << EOH
+Usage: disk_image_analysis [-f 
+EOH
+}
+
+# helper function to exit with error and message 
+function die {
+	echo $1
+	exit 1  # non-zero exit status indicates failure
+}
+
+# test whether a directory is empty 
+function isempty {
+	test ! "$(ls -A $1)"
+}
+
+function imgmount {
+	# $1 is image file
+	# $2 is mount point
+	test -f $1 || die "image file not provided"
+	test -d $2 &&  
+}
+
+
+while getopts f:d:v fileopt
+do
+	case $fileopt in
+		f)
+			DSKIMAGE=$OPTARG
+			;;
+		d)
+			MNTPOINT=$OPTARG
+			;;
+		v)
+			VERBOSE=-v
+	esac
+done
+
