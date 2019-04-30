@@ -1,1 +1,9 @@
-**.swp
+*~
+*.swp
+*.aux
+*.fdb_latexmk
+*.fls
+*.bbl
+*.blg
+*.log
+*.out

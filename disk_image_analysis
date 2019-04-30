@@ -14,6 +14,7 @@ Usage: disk_image_analysis [flags...] <actions>...
         -f <image file>    The disk image file
         -d <mount point>   Directory to mount image under
         -v                 Set verbose flags
+        -l <file>          File to log metadata to
 EOH
 }
 
@@ -44,8 +45,15 @@ function imgmount {
 	passwd
 }
 
+# extract metadata for directory 
+function metadata {
+	local fmt="%Y-%m%d %H:%M:%S"
+	test -d $1 &&
+	find $1 -printf \
+		"${fmt//%/%A};${fmt//%/%T};${fmt//%/%C};%#m;%U;%G;%s;%p\n"
+}
 
-while getopts f:d:v fileopt
+while getopts f:d:vl: fileopt
 do
 	case $fileopt in
 		f)
@@ -56,6 +64,10 @@ do
 			;;
 		v)
 			VERBOSE=-v
+			;;
+		l)
+			LOGFILE=$OPTARG
+			;;
 	esac
 done
 shift $((OPTIND-1))
@@ -85,7 +97,10 @@ do
 		tgts="$(echo $1|tr ':' ' ')" && shift
 		for t in ${tgts//:/ /}
 		do
-			echo "metadata for $t"
+			if [ -n "$VERBOSE" ]
+			then metadata ${MNTPOINT}$t | tee -a $LOGFILE
+			else metadata ${MNTPOINT}$t >> ${LOGFILE:-/dev/stdout}
+			fi
 		done
 		
 	esac

@@ -1,0 +1,7 @@
+#!/bin/bash
+echo    "Name : $1!"
+stat -c "Type : %F"
+stat -c "size : %s bytes"
+echo "$(wc -l $1) lines"
+echo "$(wc -w $1) words"
+

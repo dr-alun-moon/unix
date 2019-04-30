@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# check number of parameters is 3
+if [ $# -ne 3 ]
+then
+	echo "usage: tidy <tidy dir> <src dir> <obj dir>"
+	exit 1
+fi
+
+# check if src directory exists, if not create it
+if [ ! -d $2 ]
+then
+	mkdir $2
+fi
+
+# and the obj diectory
+if [ ! -d $3 ]
+then
+    mkdir $3
+fi
+
