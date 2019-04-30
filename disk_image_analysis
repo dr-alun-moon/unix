@@ -1,0 +1,94 @@
+#!/bin/bash
+
+function help {
+cat << EOH
+Usage: disk_image_analysis [flags...] <actions>...
+    actions are:
+	help                 show this help
+        mount                mount the disk image (-f -d required)
+        info                 show partition info (-f required)
+	extract <dir:dir>    extract metadata for colon separated
+                             list of directories
+                             under the mountpoint (-d required)
+    flags are:
+        -f <image file>    The disk image file
+        -d <mount point>   Directory to mount image under
+        -v                 Set verbose flags
+EOH
+}
+
+# helper function to exit with error and message 
+# name borrowed from perl
+function die {
+	echo $1
+	exit 1  # non-zero exit status indicates failure
+}
+
+# test whether a directory is empty 
+function isempty {
+	test ! "$(ls -A $1)"
+}
+
+function imgmount {
+	# $1 is image file
+	# $2 is mount point
+	test -f $1 || die "image file not provided"
+	test -d $2 || mkdir $VERBOSE -p $2
+	isempty $2 || die "'$2' not empty"
+	# Assume mounting first partition
+	eval $(partx --pairs --output START disk.img  -n1 )
+	sudo -S mount $VERBOSE \
+                      -o loop,offset=$((START * 512)),ro,noatime \
+		      $1 $2 <<-passwd
+	northumbria
+	passwd
+}
+
+
+while getopts f:d:v fileopt
+do
+	case $fileopt in
+		f)
+			DSKIMAGE=$OPTARG
+			;;
+		d)
+			MNTPOINT=$OPTARG
+			;;
+		v)
+			VERBOSE=-v
+	esac
+done
+shift $((OPTIND-1))
+
+while [[ $# -ne 0 ]]
+do
+	action=$1 && shift
+	case $action in
+	help)
+		help
+		;;
+	mount)
+		imgmount \
+			${DSKIMAGE:?"no disk image"} \
+			${MNTPOINT:?"no mount point"}
+		;;
+	unmount)
+		sudo -S umount ${MNTPOINT:?"no mount point"} <<-passwd
+		northumbria
+		passwd
+		;;
+	info)
+		fdisk -l ${DSKIMAGE:?"no disk image"}
+		;;
+
+	extract)
+		tgts="$(echo $1|tr ':' ' ')" && shift
+		for t in ${tgts//:/ /}
+		do
+			echo "metadata for $t"
+		done
+		
+	esac
+done
+		
+

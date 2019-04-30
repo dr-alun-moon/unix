@@ -5,9 +5,6 @@
 \usepackage[ttdefault=true]{AnonymousPro}
 \usepackage[vscale=0.8]{geometry}
 
-\title{Unix Shell scripting}
-\author{Dr Alun Moon}
-
 \usepackage[binary-units]{siunitx}
 
 \usepackage{tikz}
@@ -58,6 +55,10 @@
 
 \newcommand{\unix}{\textsc{Unix}}
 \newcommand{\ascii}{\textsc{ascii}}
+
+\title{Unix Shell scripting}
+\author{Dr Alun Moon\thanks{\url{alun.moon@northumbria.ac.uk}} and 
+	Dr David Kendall\thanks{\url{david.kendall@northumbria.ac.uk}}}
 
 \begin{document}
 \maketitle
@@ -208,7 +209,7 @@ starts with a \verb'#!' pair of characters.
 #!/bin/bash
 \end{verbatim}
 \end{code}
-The line is used to tell the operating system whichinterpreter used for the
+The line is used to tell the operating system which interpreter used for the
 file.  It allows shell scripts to be written in a variety of languages, bash
 shell, python, sed, awk, etc.
 
@@ -323,7 +324,7 @@ to stop entering text and return to the shell's command prompt.
 %%- The problem is that there are no files ending in a \textsf{.h}, the exact
 %%- reason for the error is dependent on the way the shell handles the \textsf{*.h}
 
-\clearpage
+
 \section{Command-line parameters }
 We want to write scripts than can do the same things to different data.  We
 want to back-up a file, the script can back-up \emph{any-file} but we want to

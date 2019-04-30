@@ -11,10 +11,22 @@ case $style in
 		;;
 	-tbl)
 		fmt=$1 && shift
-		echo "roff tbl request (style ${fmt:?Style not set})"
+		sed -e"\
+			1i .TS
+			1i $fmt
+		    1i .
+			\$a .TE"	
+		;;
+	-latex)
+		fmt=$1 && shift
+		sed -e"1i \\\\\\begin{table}{${fmt:?latex format no set}}
+			s'\t'\&'
+			s/$/\\\\\\\\/
+			\$a \\\\\\end{table}"
 		;;
 	*)
 		echo "not right"
 		exit 1
 		;;
 esac
+
